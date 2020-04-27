@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link as ReactLink } from 'react-router-dom';
+import { Link as ReactLink, useHistory } from 'react-router-dom';
 import Layout from '../../common/Layout';
 import {
-  FormControl,
   FormLabel,
   Text,
   Link,
@@ -11,30 +10,66 @@ import {
   Flex,
   Stack,
 } from '@chakra-ui/core';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { register as registerAction } from '../../redux/slices/authSlice';
 
 export default function Register() {
+  const { handleSubmit, register } = useForm();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const onSubmit = (data) => {
+    dispatch(
+      registerAction(
+        {
+          username: data.username,
+          password1: data.password1,
+          password2: data.password2,
+        },
+        history
+      )
+    );
+  };
   return (
     <Layout minH="100vh" maxW="100vw">
       <Flex minH="92vh" flexDirection="column" justify="center" align="center">
-        <FormControl w="30vw">
+        <form
+          style={{ width: '30vh' }}
+          w="30vw"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormLabel htmlFor="username" mt={5} color="gray.50">
             Username
           </FormLabel>
-          <Input name="username" id="username" variant="flushed" />
+          <Input
+            name="username"
+            id="username"
+            variant="flushed"
+            ref={register}
+          />
           <FormLabel htmlFor="password" mt={5} color="gray.50">
             Password
           </FormLabel>
-          <Input name="password" id="password" variant="flushed" />
+          <Input
+            name="password1"
+            type="password"
+            id="password"
+            variant="flushed"
+            ref={register}
+          />
           <FormLabel htmlFor="confirm_password" mt={5} color="gray.50">
             Confirm Password
           </FormLabel>
           <Input
-            name="confirm_password"
+            name="password2"
+            type="password"
             id="confirm_password"
             variant="flushed"
+            ref={register}
           />
           <Stack w="100%" align="center">
             <Button
+              type="submit"
               m={10}
               size="md"
               w={20}
@@ -52,7 +87,7 @@ export default function Register() {
               </Link>
             </Text>
           </Stack>
-        </FormControl>
+        </form>
       </Flex>
     </Layout>
   );

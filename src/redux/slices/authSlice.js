@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axiosWithAuth from './axiosWithAuth';
+import { axiosWithBaseURL } from '../utils/axiosWithBaseUrl';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -7,26 +7,56 @@ export const authSlice = createSlice({
     loading: false,
   },
   reducers: {
-    loginStart: (state) => {
+    start: (state) => {
       state.loading = true;
     },
-    loginSuccess: (state) => {
+    success: (state) => {
+      state.loading = false;
+    },
+    failure: (state) => {
       state.loading = false;
     },
   },
 });
 
-export const { increment, decrement, loginStart } = authSlice.actions;
+export const { start, success, failure } = authSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
-export const login = () => (dispatch) => {
-  dispatch(loginStart());
-  console.log(process.env.REACT_APP_API_URL);
-  console.log('hey!');
-  axiosWithAuth().get('/');
+export const login = (values, history) => (dispatch) => {
+  dispatch(start());
+  console.log(values);
+  axiosWithBaseURL()
+    .post('/login/', values)
+    .then((res) => {
+      dispatch(success());
+      localStorage.setItem('token', res && res.data && res.data.key);
+      console.log('Login Response', localStorage.getItem('token'));
+      history.push('/game');
+    })
+    .catch((err) => {
+      dispatch(failure());
+      alert(err.message);
+    });
+};
+
+export const register = (values, history) => (dispatch) => {
+  dispatch(start());
+  console.log(values);
+  axiosWithBaseURL()
+    .post('/registration/', values)
+    .then((res) => {
+      dispatch(success());
+      localStorage.setItem('token', res && res.data && res.data.key);
+      console.log('Register Response', localStorage.getItem('token'));
+      history.push('/game');
+    })
+    .catch((err) => {
+      dispatch(failure());
+      alert(err.message);
+    });
 };
 
 // The function below is called a selector and allows us to select a value from

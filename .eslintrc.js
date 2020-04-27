@@ -2,7 +2,7 @@ module.exports = {
   env: {
     commonjs: true,
     browser: true,
-    es6: true,
+    es7: true,
     node: true,
   },
   extends: [
@@ -20,6 +20,8 @@ module.exports = {
   plugins: ['react', 'prettier'],
   rules: {
     'react-prop-types': 0,
+    'react/prop-types': 0,
+    'react/no-unescaped-entities': 0,
   },
   overrides: [
     {

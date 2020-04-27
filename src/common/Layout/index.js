@@ -2,8 +2,10 @@
 import React from 'react';
 import { Flex, Link, Box, Text } from '@chakra-ui/core';
 import { NavLink } from 'react-router-dom';
+import { useHistory } from 'react-router';
 
 export default function Layout({ children }) {
+  const history = useHistory();
   return (
     <Flex
       minH="100vh"
@@ -25,14 +27,36 @@ export default function Layout({ children }) {
               Game of [object Object]
             </Text>
           </Link>
-          <Flex>
-            <Link fontSize="lg" as={NavLink} to="/login" m="0 2rem">
-              <Text color="gray.50">Login</Text>
-            </Link>
-            <Link fontSize="lg" as={NavLink} to="/register">
-              <Text color="gray.50">Register</Text>
-            </Link>
-          </Flex>
+          {localStorage.getItem('token') ? (
+            <Flex>
+              <Link as={NavLink} to="/game">
+                <Text color="gray.50" fontSize="lg">
+                  Play Now!
+                </Text>
+              </Link>
+              <Text
+                color="gray.50"
+                fontSize="lg"
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  history.push('/');
+                }}
+                style={{ cursor: 'pointer' }}
+                m="0 2rem"
+              >
+                Logout
+              </Text>
+            </Flex>
+          ) : (
+            <Flex>
+              <Link fontSize="lg" as={NavLink} to="/login" m="0 2rem">
+                <Text color="gray.50">Login</Text>
+              </Link>
+              <Link fontSize="lg" as={NavLink} to="/register">
+                <Text color="gray.50">Register</Text>
+              </Link>
+            </Flex>
+          )}
         </Flex>
       </Box>
       {/* <Box h="5rem" /> */}
