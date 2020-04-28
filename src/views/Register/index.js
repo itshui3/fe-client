@@ -28,8 +28,11 @@ export default function Register() {
       registerAction(
         {
           username: data.username,
-          password1: data.password1,
-          password2: data.password2,
+          password: data.password,
+          confirm_password: data.confirm_password,
+          character_name: data.character_name,
+          character_type: data.character_type,
+          portrait: data.portrait
         },
         history
       )
