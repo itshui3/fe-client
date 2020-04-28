@@ -23,7 +23,8 @@
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "serve": "^11.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -32,7 +33,9 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md)\""
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md)\"",
+    "serve": "serve -s build",
+    "deploy": "yarn build && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"

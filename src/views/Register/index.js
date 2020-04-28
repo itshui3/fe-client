@@ -24,6 +24,7 @@ export default function Register() {
   const dispatch = useDispatch();
   const history = useHistory();
   const onSubmit = (data) => {
+    console.log("back end url:", process.env.REACT_APP_API_URL)
     dispatch(
       registerAction(
         {

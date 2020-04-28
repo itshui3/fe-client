@@ -20,6 +20,7 @@ export default function Login() {
   const dispatch = useDispatch();
   const history = useHistory();
   const onSubmit = (data) => {
+    console.log("back end url:", process.env.REACT_APP_API_URL)
     dispatch(
       login({ username: data.username, password: data.password }, history)
     );
