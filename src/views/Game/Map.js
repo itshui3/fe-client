@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stage, Layer, Rect } from 'react-konva';
+import { Stage, Layer, Rect, Star } from 'react-konva';
 
 function Room({ x, y }) {
     return (
@@ -11,6 +11,19 @@ function Room({ x, y }) {
             fill="#fff"
             stroke="#000"
             strokeWidth={1}
+        />
+    )
+}
+
+function PlayerIcon({ x, y }) {
+    return (
+        <Star
+            x={x}
+            y={y}
+            numPoints={5}
+            outerRadius={20}
+            innerRadius={10}
+            fill="#000"
         />
     )
 }
@@ -40,7 +53,12 @@ export default function Map() {
                 position = { x: 0, y: position.y+57 }
             }            
             console.log(position, index, counter)
-            return <Room x={position.x} y={position.y} />
+            return (
+                <>
+                    <Room x={position.x} y={position.y} />
+                    {index === 95 && <PlayerIcon x={position.x + 28.5} y={position.y + 28.5} />}
+                </>
+            )
         }))
     }, [mapSquareRoot, rooms])
 
