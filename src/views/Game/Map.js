@@ -51,8 +51,7 @@ export default function Map() {
             } else {
                 counter = 1
                 position = { x: 0, y: position.y+57 }
-            }            
-            console.log(position, index, counter)
+            }
             return (
                 <>
                     <Room x={position.x} y={position.y} />
