@@ -25,10 +25,27 @@ export const gameSlice = createSlice({
     gameInitFailure: (state) => {
       state.loading = false;
     },
+    moveStart: (state) => {
+        state.loading = true;
+    },
+    moveSuccess: (state, action) => {
+        state.loading = false;
+      state.user = action.payload.user
+      state.currentRoom = action.payload.currentRoom
+    },
+    moveFailure: (state) => {
+        state.loading = false;}
   },
 });
 
-export const { gameInitStart, gameInitSuccess, gameInitFailure } = gameSlice.actions;
+export const {
+    gameInitStart,
+    gameInitSuccess,
+    gameInitFailure,
+    moveStart,
+    moveSuccess,
+    moveFailure
+} = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -51,6 +68,25 @@ export const gameInit = (values) => (dispatch) => {
     .catch((err) => {
       console.log(err)
     });
+};
+
+export const move = (direction) => (dispatch) => {
+    dispatch(moveStart());
+    axiosWithAuth()
+        .post('/adv/move/', { direction: direction })
+        .then((res) => {
+            const user = { name: res.data.name }
+            const currentRoom = {
+                title: res.data.title,
+                description: res.data.description
+            }
+            dispatch(gameInitSuccess({ user: user, currentRoom: currentRoom }))
+            console.log(user)
+            console.log(currentRoom)
+        })
+        .catch((err) => {
+          console.log(err)
+        });
 };
 
 // The function below is called a selector and allows us to select a value from
