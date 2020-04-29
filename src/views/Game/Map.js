@@ -1,21 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Stage, Layer, Rect, Line, Star } from 'react-konva';
+import useImage from 'use-image';
+import { Stage, Layer, Line, Star, Rect } from 'react-konva';
+import stone from '../../img/stone.jpg'
 
-function Room({ x, y, tileSize }) {
-    return (
-        <Rect
-            x={x}
-            y={y}
-            width={tileSize}
-            height={tileSize}
-            fill="#fff"
-            stroke="#888"
-            strokeWidth={1}
-        />
-    )
-}
-
-function Wall({ x, y, tileSize, direction }) {    
+function Wall({ x, y, tileSize, direction }) {
     return (
         <Line
             points={
@@ -55,10 +43,11 @@ for (let i = 0; i < 25; i++) {
 }
 
 export default function Map() {
-    const [rooms, setRooms] = useState(initializeArr)    
-    const mapSquareRoot = Math.sqrt(rooms.length)
-    const tileSize = 570 / mapSquareRoot
-    const [tiles, setTiles] = useState([])    
+    const [background] = useImage(stone);
+    const [rooms, setRooms] = useState(initializeArr);
+    const mapSquareRoot = Math.sqrt(rooms.length);
+    const tileSize = 570 / mapSquareRoot;
+    const [tiles, setTiles] = useState([]);
 
     useEffect(() => {
         let position = { x: 0, y: 0 }
@@ -75,8 +64,10 @@ export default function Map() {
             }
             return (
                 <>
-                    
-                    <Room x={position.x} y={position.y} tileSize={tileSize} />
+                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east" />
+                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />
+                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />
+                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />
                     {index === 12 && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
                 </>
             )
@@ -86,6 +77,7 @@ export default function Map() {
     return (
         <Stage width={570} height={570}>
             <Layer>
+                <Rect width={570} height={570} fillPatternImage={background} />
                 {tiles}
             </Layer>
         </Stage>

@@ -6,35 +6,44 @@ export const gameSlice = createSlice({
   initialState: {
     loading: false,
     user: {
-        name: ''
+        username: '',
+        character_name: '',
+        character_type: '',
+        portrait: '',
+        HP: null,
+        MP: null,
+        gold: null,
+        items: []
     },
     currentRoom: {
         title: '',
-        description: ''
+        description: '',
+        items: []
     }
   },
   reducers: {
     gameInitStart: (state) => {
-      state.loading = true;
+        state.loading = true;
     },
     gameInitSuccess: (state, action) => {
-      state.loading = false;
-      state.user = action.payload.user
-      state.currentRoom = action.payload.currentRoom
+        state.loading = false;
+        state.user = action.payload.user
+        state.currentRoom = action.payload.currentRoom
     },
     gameInitFailure: (state) => {
-      state.loading = false;
+        state.loading = false;
     },
     moveStart: (state) => {
         state.loading = true;
     },
     moveSuccess: (state, action) => {
         state.loading = false;
-      state.user = action.payload.user
-      state.currentRoom = action.payload.currentRoom
+        state.user = action.payload.user
+        state.currentRoom = action.payload.currentRoom
     },
     moveFailure: (state) => {
-        state.loading = false;}
+        state.loading = false;
+    }
   },
 });
 
@@ -56,36 +65,42 @@ export const gameInit = (values) => (dispatch) => {
   axiosWithAuth()
     .get('/adv/init/')
     .then((res) => {
-        const user = { name: res.data.name }
+        const user = {
+            username: res.data.username,
+            character_name: res.data.character_name,
+            character_type: res.data.character_type,
+            portrait: res.data.portrait,
+            HP: res.data.HP,
+            MP: res.data.MP,
+            gold: res.data.gold
+        }
         const currentRoom = {
-            title: res.data.title,
-            description: res.data.description
+            title: res.data.current_room.title,
+            description: res.data.current_room.description
         }
         dispatch(gameInitSuccess({ user: user, currentRoom: currentRoom }))
-        console.log(user)
-        console.log(currentRoom)
     })
     .catch((err) => {
-      console.log(err)
+        dispatch(gameInitFailure())
+      console.log(err.response)
     });
 };
 
 export const move = (direction) => (dispatch) => {
     dispatch(moveStart());
     axiosWithAuth()
-        .post('/adv/move/', { direction: direction })
+        .post('/player/movement/', { direction: direction })
         .then((res) => {
-            const user = { name: res.data.name }
             const currentRoom = {
-                title: res.data.title,
-                description: res.data.description
+                title: res.data.current_room.title,
+                description: res.data.current_room.description,
+                items: res.data.current_room.items
             }
-            dispatch(gameInitSuccess({ user: user, currentRoom: currentRoom }))
-            console.log(user)
-            console.log(currentRoom)
+            dispatch(moveSuccess({ currentRoom: currentRoom }))
         })
         .catch((err) => {
-          console.log(err)
+            dispatch(moveFailure())
+          console.log(err.response)
         });
 };
 
