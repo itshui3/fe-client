@@ -60,7 +60,7 @@ export default function Map() {
                 </>
             )
         }))
-    }, [mapSquareRoot, rooms])
+    }, [mapSquareRoot, tileSize, rooms])
 
     return (
         <Stage width={570} height={570}>
