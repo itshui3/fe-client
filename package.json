@@ -34,7 +34,11 @@
     "eject": "react-scripts eject",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md)\""
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md)\"",
+    "serve": "serve -s build",
+    "build-serve": "yarn build && serve -s build",
+    "deploy": "firebase deploy",
+    "build-deploy": "yarn build && firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
