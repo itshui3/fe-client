@@ -11,10 +11,37 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { move } from '../../redux/slices/gameSlice';
 
+function Message({ prevCommand, currentRoom }) {
+  if (prevCommand === 'examine room') {
+    return (
+      <>
+        <Text mt={3}>
+          <strong>You examine the area.</strong>
+        </Text>
+        {
+          currentRoom.items.length > 0 ? (
+              <Text>
+                Items:{' '}
+                {
+                  currentRoom.items.map(item => (
+                      <>
+                          <Code>{item.title}</Code>{' '}
+                      </>
+                  ))
+                }
+              </Text>
+          ) : <Text>There is nothing of interest.</Text>
+        }
+      </>
+    )
+  } else return <></>
+};
+
 export default function Console() {
   const dispatch = useDispatch();
   const { currentRoom } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
+  const [prevCommand, setPrevCommand] = useState('')
 
   const handleChange = e => {
     e.preventDefault()
@@ -27,8 +54,9 @@ export default function Console() {
       dispatch(
         move(command)
       );
-      setCommand('')
     }
+    setPrevCommand(command)
+    setCommand('')
   };
 
     return (
@@ -38,12 +66,7 @@ export default function Console() {
                 {currentRoom.title}
               </Heading>
               <Text>{currentRoom.description}</Text>
-              <Text mt={3}>
-                <strong>You examine the area.</strong>
-              </Text>
-              <Text>
-                Items: <Code>health potion</Code> <Code>torch</Code>
-              </Text>
+              <Message prevCommand={prevCommand} currentRoom={currentRoom} />
               <Text mt={50}>
                 <strong>Available commands:</strong>
               </Text>
