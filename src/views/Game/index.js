@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import Layout from '../../common/Layout';
 import {
   Flex,
   Stack,
 } from '@chakra-ui/core';
+import { useDispatch } from 'react-redux';
+import { gameInit } from '../../redux/slices/gameSlice';
 
 import Map from './Map'
 import PlayerInfo from './PlayerInfo'
 import Console from './Console'
 
 export default function Game() {
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/')
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-  }, [])
+    dispatch(gameInit())
+  }, [dispatch])
 
   return (
     <Layout minH="100vh" maxW="100vw">

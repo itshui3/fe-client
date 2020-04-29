@@ -7,8 +7,10 @@ import {
   Image,
   Code,
 } from '@chakra-ui/core';
+import { useSelector } from 'react-redux'
 
 export default function PlayerInfo() {
+    const { user } = useSelector(state => state.game)
     return (
         <Flex h={175}>
             <Box width={150}>
@@ -16,7 +18,7 @@ export default function PlayerInfo() {
             </Box>
             <Stack pl={3}>
                 <Text>
-                <strong>Player Name</strong>, Warrior
+                <strong>{user.name}</strong>, Warrior
                 </Text>
                 <Text>
                 <strong>HP:</strong> 100/100 <strong>MP:</strong> 20/20
