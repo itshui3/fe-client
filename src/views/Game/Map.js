@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Stage, Layer, Rect, Star } from 'react-konva';
+import { Stage, Layer, Rect, Line, Star } from 'react-konva';
 
 function Room({ x, y, tileSize }) {
     return (
@@ -9,8 +9,28 @@ function Room({ x, y, tileSize }) {
             width={tileSize}
             height={tileSize}
             fill="#fff"
-            stroke="#000"
+            stroke="#888"
             strokeWidth={1}
+        />
+    )
+}
+
+function Wall({ x, y, tileSize, direction }) {    
+    return (
+        <Line
+            points={
+                direction === "west" ?
+                    [x, y, x, y + tileSize]
+                : direction === "east" ?
+                    [x + tileSize, y, x + tileSize, y + tileSize]
+                : direction === "north" ?
+                    [x, y, x + tileSize, y]
+                : direction === "south" ?
+                    [x, y + tileSize, x + tileSize, y + tileSize]
+                : null
+            }
+            stroke="#000"
+            strokeWidth={8}
         />
     )
 }
@@ -55,6 +75,7 @@ export default function Map() {
             }
             return (
                 <>
+                    
                     <Room x={position.x} y={position.y} tileSize={tileSize} />
                     {index === 12 && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
                 </>
