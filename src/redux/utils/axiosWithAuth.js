@@ -5,7 +5,7 @@ export const axiosWithAuth = () => {
   return axios.create({
     baseURL: process.env.REACT_APP_API_URL,
     headers: {
-      Authorization: `Token ${token}`,
+      token: token,
     },
   });
 };

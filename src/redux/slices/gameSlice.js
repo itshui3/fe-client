@@ -82,7 +82,7 @@ export const gameInit = (values) => (dispatch) => {
     })
     .catch((err) => {
         dispatch(gameInitFailure())
-      console.log(err.response)
+      console.log(err)
     });
 };
 
@@ -100,7 +100,7 @@ export const move = (direction) => (dispatch) => {
         })
         .catch((err) => {
             dispatch(moveFailure())
-          console.log(err.response)
+          console.log(err)
         });
 };
 
