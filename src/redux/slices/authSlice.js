@@ -27,13 +27,11 @@ export const { start, success, failure } = authSlice.actions;
 // code can then be executed and other actions can be dispatched
 export const login = (values, history) => (dispatch) => {
   dispatch(start());
-  console.log(values);
   axiosWithBaseURL()
     .post('/login/', values)
     .then((res) => {
       dispatch(success());
       localStorage.setItem('token', res && res.data && res.data.key);
-      console.log('Login Response', localStorage.getItem('token'));
       history.push('/game');
     })
     .catch((err) => {
@@ -44,13 +42,11 @@ export const login = (values, history) => (dispatch) => {
 
 export const register = (values, history) => (dispatch) => {
   dispatch(start());
-  console.log(values);
   axiosWithBaseURL()
     .post('/registration/', values)
     .then((res) => {
       dispatch(success());
       localStorage.setItem('token', res && res.data && res.data.key);
-      console.log('Register Response', localStorage.getItem('token'));
       history.push('/game');
     })
     .catch((err) => {

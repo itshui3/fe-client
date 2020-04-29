@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Layout from '../../common/Layout';
 import {
   Flex,
@@ -10,6 +11,13 @@ import PlayerInfo from './PlayerInfo'
 import Console from './Console'
 
 export default function Game() {
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:5000/')
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
+  }, [])
+
   return (
     <Layout minH="100vh" maxW="100vw">
       <Stack minH="92vh" justify="center" align="center">

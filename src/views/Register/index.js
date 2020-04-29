@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as ReactLink, useHistory } from 'react-router-dom';
 import Layout from '../../common/Layout';
 import {
@@ -21,6 +21,7 @@ import { register as registerAction } from '../../redux/slices/authSlice';
 
 export default function Register() {
   const { handleSubmit, register } = useForm();
+  const [portrait, setPortrait] = useState('https://i.imgur.com/33YFmmJ.png')
   const dispatch = useDispatch();
   const history = useHistory();
   const onSubmit = (data) => {
@@ -28,11 +29,11 @@ export default function Register() {
       registerAction(
         {
           username: data.username,
-          password: data.password,
-          confirm_password: data.confirm_password,
+          password1: data.password,
+          password2: data.confirm_password,
           character_name: data.character_name,
           character_type: data.character_type,
-          portrait: data.portrait
+          portrait: portrait
         },
         history
       )
@@ -103,16 +104,15 @@ export default function Register() {
               </Select>
             </FormControl>
           </Flex>
-          <FormControl as="fieldset" mt={5} isRequired>
+          <FormControl as="fieldset" mt={5}>
             <FormLabel htmlFor="portrait" color="gray.50" as="legend">Appearance</FormLabel>
             <RadioGroup
               style={{ display: "flex", justifyContent: "space-between" }}
-              defaultValue="https://i.imgur.com/33YFmmJ.png"
               name="portrait"
               id="portrait"
-              ref={register}
+              onChange={e => setPortrait(e.target.value)} value={portrait}
             >
-                <Radio value="https://i.imgur.com/33YFmmJ.png">
+                <Radio type="radio" name="portrait" value="https://i.imgur.com/33YFmmJ.png">
                   <Image
                     src="https://i.imgur.com/33YFmmJ.png"
                     fallbackSrc="https://via.placeholder.com/150"
@@ -120,7 +120,7 @@ export default function Register() {
                     alt="Portrait of an elf"
                   />
                 </Radio>
-                <Radio value="https://i.imgur.com/eHbbvJu.png">
+                <Radio type="radio" name="portrait" value="https://i.imgur.com/eHbbvJu.png">
                   <Image
                     src="https://i.imgur.com/eHbbvJu.png"
                     fallbackSrc="https://via.placeholder.com/150"
@@ -128,7 +128,7 @@ export default function Register() {
                     alt="Portrait of a cat person"
                   />
                 </Radio>
-                <Radio value="https://i.imgur.com/ELrdSHC.png">
+                <Radio type="radio" name="portrait" value="https://i.imgur.com/ELrdSHC.png">
                   <Image
                     src="https://i.imgur.com/ELrdSHC.png"
                     fallbackSrc="https://via.placeholder.com/150"

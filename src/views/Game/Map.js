@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Stage, Layer, Rect, Star } from 'react-konva';
 
-function Room({ x, y }) {
+function Room({ x, y, tileSize }) {
     return (
         <Rect
             x={x}
             y={y}
-            width={57}
-            height={57}
+            width={tileSize}
+            height={tileSize}
             fill="#fff"
             stroke="#000"
             strokeWidth={1}
@@ -30,13 +30,14 @@ function PlayerIcon({ x, y }) {
 
 const initializeArr = []
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 25; i++) {
     initializeArr.push('x')
 }
 
 export default function Map() {
     const [rooms, setRooms] = useState(initializeArr)    
     const mapSquareRoot = Math.sqrt(rooms.length)
+    const tileSize = 570 / mapSquareRoot
     const [tiles, setTiles] = useState([])    
 
     useEffect(() => {
@@ -44,18 +45,18 @@ export default function Map() {
         let counter = 0
         setTiles(rooms.map((room, index) => {
             if (index > 0) {
-                position.x = position.x + 57
+                position.x = position.x + tileSize
             }
             if (counter < mapSquareRoot) {
                 counter++
             } else {
                 counter = 1
-                position = { x: 0, y: position.y+57 }
+                position = { x: 0, y: position.y + tileSize }
             }
             return (
                 <>
-                    <Room x={position.x} y={position.y} />
-                    {index === 95 && <PlayerIcon x={position.x + 28.5} y={position.y + 28.5} />}
+                    <Room x={position.x} y={position.y} tileSize={tileSize} />
+                    {index === 12 && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
                 </>
             )
         }))
