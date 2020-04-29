@@ -5,8 +5,13 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState: {
     loading: false,
-    user: {},
-    currentRoom: {}
+    user: {
+        name: ''
+    },
+    currentRoom: {
+        title: '',
+        description: ''
+    }
   },
   reducers: {
     gameInitStart: (state) => {
