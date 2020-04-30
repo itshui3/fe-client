@@ -11,6 +11,9 @@ export const messagesSlice = createSlice({
     start: (state) => {
       state.loading = true;
     },
+    success: (state) => {
+      state.loading = false;
+    },
     getSuccess: (state, action) => {
       state.loading = false;
       state.messages = action.payload;
@@ -19,18 +22,14 @@ export const messagesSlice = createSlice({
       state.loading = false;
     },
     pushMessageAction: (state, action) => {
-      console.log('push reducer', [...state.messages, action.payload]);
-      state.messages = [...state.messages, action.payload];
+      state.messages = [action.payload, ...state.messages];
     },
-    // addMessageAction: (state, action) => {
-    //   console.log('add reducer', [...state.messages, action.payload]);
-    //   state.messages = [...state.messages, action.payload];
-    // },
   },
 });
 
 export const {
   start,
+  success,
   getSuccess,
   failure,
   pushMessageAction,
@@ -66,6 +65,7 @@ export const postMessage = (values) => (dispatch) => {
   axiosWithAuth()
     .post('/messages/', values)
     .then((res) => {
+      dispatch(success());
       // dispatch(addMessageAction(res.data));
       console.log('post res:', res.data);
     })
