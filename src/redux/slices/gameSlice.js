@@ -31,6 +31,7 @@ export const gameSlice = createSlice({
         west: null,
         east: null
     },
+    merchantInventory: [],
     map: []
   },
   reducers: {
@@ -60,7 +61,7 @@ export const gameSlice = createSlice({
     moveFailure: (state) => {
         state.loading = false;
     },
-    noExit: (state, action) => {
+    setError: (state, action) => {
         state.loading = false;
         state.error = action.payload
     },
@@ -76,6 +77,26 @@ export const gameSlice = createSlice({
     attackFailure: (state) => {
         state.loading = false;
     },
+    shopStart: (state) => {
+        state.loading = true;
+        state.error = ''
+    },
+    shopSuccess: (state) => {
+        state.loading = false;
+    },
+    shopFailure: (state) => {
+        state.loading = false;
+    },
+    updateUserItems: (state, action) => {
+        state.user = {
+            ...state.user,
+            gold: action.payload.gold,
+            items: action.payload.items
+        }
+    },
+    updateMerchantItems: (state, action) => {
+        state.merchantInventory = action.payload
+    }
   },
 });
 
@@ -86,17 +107,27 @@ export const {
     moveStart,
     moveSuccess,
     moveFailure,
-    noExit,
+    setError,
     attackStart,
     attackSuccess,
-    attackFailure
+    attackFailure,
+    shopStart,
+    shopSuccess,
+    shopFailure,
+    updateUserItems,
+    updateMerchantItems
 } = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
-export const gameInit = (values) => (dispatch) => {
+
+export const handleError = (error) => (dispatch) => {
+    dispatch(setError(error))
+}
+
+export const gameInit = () => (dispatch) => {
   dispatch(gameInitStart());
   axiosWithAuth()
     .get('/player/startgame/')
@@ -120,10 +151,10 @@ export const move = (direction) => (dispatch) => {
         .post('/player/movement/', { direction: direction })
         .then((res) => {
             if (res.data === 'ya done goofed, no room here') {
-                dispatch(noExit("You can't move in that direction."))
+                dispatch(setError("You can't move in that direction."))
             }
             else if (res.data === 'monster present, deal with it before leaving the room') {
-                dispatch(noExit("A monster blocks your path - deal with it first!"))
+                dispatch(setError("A monster blocks your path - deal with it first!"))
             }
             else{                
                 const map = res.data.map.sort((a, b) => (a.id > b.id) ? 1 : -1)
@@ -136,7 +167,7 @@ export const move = (direction) => (dispatch) => {
         })
         .catch((err) => {
             dispatch(moveFailure())
-          console.log(err)
+          console.log(err);
         });
 };
 
@@ -145,10 +176,52 @@ export const attack = () => (dispatch) => {
     axiosWithAuth()
         .post('/player/combat/', { command: 'attack' })
         .then((res) => {
-            console.log(res)
+            dispatch(shopSuccess());
+            console.log(res);
         })
         .catch((err) => {
             dispatch(attackFailure())
+            console.log(err);
+        })
+};
+
+export const shop = (command, item) => (dispatch) => {
+    let payload = { command: command }
+
+    if (command.includes('buy')) {
+        payload = {
+            ...payload,
+            buy_item: item
+        }
+    } else if (command.includes('sell')) {
+        payload = {
+            ...payload,
+            sell_item: item
+        }
+    }
+
+    dispatch(shopStart());
+
+    axiosWithAuth()
+        .post('/merchant/', payload)
+        .then((res) => {
+            if (res.data.error) {
+                dispatch(setError(res.data.error))
+            } else {
+                dispatch(shopSuccess())
+                if (command.includes('buy') || command.includes('sell')) {
+                    console.log(res.data)
+                    const gold = res.data.gold
+                    const items = res.data.items
+                    dispatch(updateUserItems({ gold: gold, items: items }))
+                } else {
+                    console.log(res.data)
+                    dispatch(updateMerchantItems(res.data))
+                }
+            }
+        })
+        .catch((err) => {
+            dispatch(shopFailure())
             console.log(err)
         })
 };
