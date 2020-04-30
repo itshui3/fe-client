@@ -12,15 +12,13 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { move, attack, shop, handleError } from '../../redux/slices/gameSlice';
 
-function Message({ error, prevCommand, currentRoom }) {
+function Message({ error }) {
   if (error) {
     return (
       <Text mt={3}>
           <strong>{error}</strong>
       </Text>
     )
-  } else if (currentRoom.NPCs.includes('merchant') && prevCommand === 'peruse') {
-    return <Text>Hello Merchant</Text>
   } else return <></>
 };
 
@@ -79,7 +77,7 @@ function Commands({ currentRoom, user }) {
         <Code>move [n, s, e, w]</Code>{' '}
         {currentRoom.items && <><Code>get [item]</Code>{' '}</>}                
         {user.items && <><Code>drop [item]</Code>{' '}</>}                
-        {currentRoom.NPCs.includes('merchant') && (
+        {currentRoom.NPCs?.includes('merchant') && (
           <>
             <Code>peruse</Code>{' '}
             <Code>buy [item]</Code>{' '}
@@ -93,7 +91,7 @@ function Commands({ currentRoom, user }) {
 
 export default function Console() {
   const dispatch = useDispatch();
-  const { user, currentRoom, error, loading } = useSelector(state => state.game)
+  const { user, currentRoom, error, loading, merchantInventory } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
   const [prevCommand, setPrevCommand] = useState('')
 
@@ -108,12 +106,11 @@ export default function Console() {
       dispatch(move(command));
     } else if (command === 'attack') {
       dispatch(attack())
-    } else if (currentRoom.NPCs.includes('merchant') && command === 'peruse' || command.includes('buy') || command.includes('sell')) {
+    } else if ((currentRoom.NPCs?.includes('merchant')) && (command === 'peruse' || command.includes('buy') || command.includes('sell'))) {
       if (command === "peruse") {
        dispatch(shop(command))
       } else {
         const cmd_parse = command.split(' ')
-        console.log(cmd_parse)
         dispatch(shop(cmd_parse[0], cmd_parse[1]))
       }
     }
@@ -131,7 +128,24 @@ export default function Console() {
                 {currentRoom.title}
               </Heading>
               <Text>{currentRoom.description}</Text>
-              <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
+              <Message
+                prevCommand={prevCommand}
+                currentRoom={currentRoom}
+                error={error}
+                merchantInventory={merchantInventory}
+              />
+              {(currentRoom.NPCs?.includes('merchant')) && (prevCommand === 'peruse') && (
+                <>                
+                  <Text mt={3}><strong>You peruse the merchant's inventory.</strong></Text>
+                  {merchantInventory.map(item => (
+                    <>
+                      <Text>
+                        <Code>{item.name}</Code> {item.price}g, {item.quantity} in stock
+                      </Text>
+                    </>
+                  ))}
+                </>
+              )}
               {currentRoom.NPCs && <NPCs currentRoom={currentRoom} />}
               {currentRoom.mobs && <Monsters currentRoom={currentRoom} />}
               {currentRoom.items && <Items currentRoom={currentRoom} />}

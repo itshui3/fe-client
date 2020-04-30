@@ -93,6 +93,9 @@ export const gameSlice = createSlice({
             gold: action.payload.gold,
             items: action.payload.items
         }
+    },
+    updateMerchantItems: (state, action) => {
+        state.merchantInventory = action.payload
     }
   },
 });
@@ -111,7 +114,8 @@ export const {
     shopStart,
     shopSuccess,
     shopFailure,
-    updateUserItems
+    updateUserItems,
+    updateMerchantItems
 } = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -183,7 +187,7 @@ export const attack = () => (dispatch) => {
 
 export const shop = (command, item) => (dispatch) => {
     let payload = { command: command }
-    
+
     if (command.includes('buy')) {
         payload = {
             ...payload,
@@ -201,16 +205,19 @@ export const shop = (command, item) => (dispatch) => {
     axiosWithAuth()
         .post('/merchant/', payload)
         .then((res) => {
-            if (res.data === "Incorrect or unknown command" || res.data === "Item is out of stock") {
-                dispatch(setError(res.data))
+            if (res.data.error) {
+                dispatch(setError(res.data.error))
             } else {
                 dispatch(shopSuccess())
                 if (command.includes('buy') || command.includes('sell')) {
+                    console.log(res.data)
                     const gold = res.data.gold
                     const items = res.data.items
                     dispatch(updateUserItems({ gold: gold, items: items }))
+                } else {
+                    console.log(res.data)
+                    dispatch(updateMerchantItems(res.data))
                 }
-                console.log(res)
             }
         })
         .catch((err) => {

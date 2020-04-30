@@ -5,6 +5,7 @@ import {
   Stack,
   Text,
   Image,
+  Code,
 } from '@chakra-ui/core';
 import { useSelector } from 'react-redux'
 
@@ -35,15 +36,15 @@ export default function PlayerInfo() {
                 </Text>
                 <Text>
                     <strong>Inventory:</strong>{' '}
-                    {/* {
-                        user.items.split(' ').length > 0 ?
+                    {
+                        user.items ?
                             user.items.split(' ').map(item => (
                                 <>
                                     <Code>{item}</Code>{' '}
                                 </>
                             ))
                         : 'Empty!'
-                    } */}
+                    }
                 </Text>
             </Stack>
         </Flex>
