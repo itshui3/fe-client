@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux'
 
 export default function PlayerInfo() {
     const { user } = useSelector(state => state.game)
+    console.log(user)
 
     return (
         <Flex h={175}>
@@ -36,15 +37,15 @@ export default function PlayerInfo() {
                 </Text>
                 <Text>
                     <strong>Inventory:</strong>{' '}
-                    {
-                        user.items.length > 0 ?
-                            user.items.map(item => (
+                    {/* {
+                        user.items.split(' ').length > 0 ?
+                            user.items.split(' ').map(item => (
                                 <>
-                                    <Code>{item.title}</Code>{' '}
+                                    <Code>{item}</Code>{' '}
                                 </>
                             ))
                         : 'Empty!'
-                    }
+                    } */}
                 </Text>
             </Stack>
         </Flex>
