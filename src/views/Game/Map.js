@@ -70,7 +70,7 @@ export default function Map() {
                 </>
             )
         }))
-    }, [map])
+    }, [map, currentRoom])
 
     return (
         <Stage width={570} height={570}>

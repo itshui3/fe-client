@@ -23,8 +23,9 @@ export const gameSlice = createSlice({
         title: '',
         description: '',
         floor: '',
-        items: [],
-        NPCs: [],
+        items: '',
+        NPCs: '',
+        mobs: '',
         north: null,
         south: null,
         west: null,
@@ -63,6 +64,18 @@ export const gameSlice = createSlice({
         state.loading = false;
         state.error = action.payload
     },
+    attackStart: (state) => {
+        state.loading = true;
+        state.error = ''
+    },
+    attackSuccess: (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user
+        state.currentRoom = action.payload.currentRoom
+    },
+    attackFailure: (state) => {
+        state.loading = false;
+    },
   },
 });
 
@@ -73,7 +86,10 @@ export const {
     moveStart,
     moveSuccess,
     moveFailure,
-    noExit
+    noExit,
+    attackStart,
+    attackSuccess,
+    attackFailure
 } = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -85,10 +101,11 @@ export const gameInit = (values) => (dispatch) => {
   axiosWithAuth()
     .get('/player/startgame/')
     .then((res) => {
+        const map = res.data.map.sort((a, b) => (a.id > b.id) ? 1 : -1)
         dispatch(gameInitSuccess({
             user: res.data.user,
             currentRoom: res.data.room,
-            map: res.data.map
+            map: map
         }))
     })
     .catch((err) => {
@@ -102,19 +119,18 @@ export const move = (direction) => (dispatch) => {
     axiosWithAuth()
         .post('/player/movement/', { direction: direction })
         .then((res) => {
-            console.log(res)
             if (res.data === 'ya done goofed, no room here') {
                 dispatch(noExit("You can't move in that direction."))
             }
-            else{
+            else if (res.data === 'monster present, deal with it before leaving the room') {
+                dispatch(noExit("A monster blocks your path - deal with it first!"))
+            }
+            else{                
+                const map = res.data.map.sort((a, b) => (a.id > b.id) ? 1 : -1)
                 dispatch(moveSuccess({
                     user: res.data.user,
-                    currentRoom: {
-                        ...res.data.room,
-                        items: res.data.room.items.split(' '),
-                        NPCs: res.data.room.NPCs.split(' ')
-                    },
-                    map: res.data.map
+                    currentRoom: res.data.room,
+                    map: map
                 }))
             }
         })
@@ -122,6 +138,19 @@ export const move = (direction) => (dispatch) => {
             dispatch(moveFailure())
           console.log(err)
         });
+};
+
+export const attack = () => (dispatch) => {
+    dispatch(attackStart());
+    axiosWithAuth()
+        .post('/player/combat/', { command: 'attack' })
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((err) => {
+            dispatch(attackFailure())
+            console.log(err)
+        })
 };
 
 // The function below is called a selector and allows us to select a value from
