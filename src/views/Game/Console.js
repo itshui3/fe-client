@@ -7,50 +7,82 @@ import {
   Input,
   Button,
   Code,
+  Spinner
 } from '@chakra-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
-import { move } from '../../redux/slices/gameSlice';
+import { move, attack } from '../../redux/slices/gameSlice';
 
 function Message({ error }) {
-  if (error) {
-    return (
-      <Text mt={3}>
-          <strong>{error}</strong>
-      </Text>
-    )
-  }
-  else return <></>
+  return (
+    <Text mt={3}>
+        <strong>{error}</strong>
+    </Text>
+  )
 };
 
+function NPCs({ currentRoom }) {
+  return (
+    <Text mt={3}>
+      <strong>NPCs:</strong>{' '}
+        {
+          currentRoom.NPCs.split(' ').map(npc => (
+              <>
+                  <Code>{npc}</Code>{' '}
+              </>
+          ))
+        }
+    </Text>
+  )
+}
+
+function Monsters({ currentRoom }) {
+  return (
+    <Text mt={3}>
+      <strong>Monsters:</strong>{' '}
+        {
+          currentRoom.mobs.split(' ').map(mob => (
+              <>
+                  <Code>{mob}</Code>{' '}
+              </>
+          ))
+        }
+    </Text>
+  )
+}
+
 function Items({ currentRoom }) {
-  if (currentRoom.items) {
-    if (currentRoom.items.includes(' ')) {
-      return (
-        <Text mt={3}>
-          <strong>Items:</strong>{' '}
-            {
-              currentRoom.items.split(' ').map(item => (
-                  <>
-                      <Code>{item}</Code>{' '}
-                  </>
-              ))
-            }
-        </Text>
-      )
-    } else {
-      return (
-        <Text mt={3}>
-          <strong>Items:</strong>{' '}
-          <Code>{currentRoom.items}</Code>
-        </Text>
-      )
-    }
-  } else return <></>
+  return (
+    <Text mt={3}>
+      <strong>Items:</strong>{' '}
+        {
+          currentRoom.items.split(' ').map(item => (
+              <>
+                  <Code>{item}</Code>{' '}
+              </>
+          ))
+        }
+    </Text>
+  )
+}
+
+function Commands({ currentRoom, user }) {
+  return (
+    <>
+      <Text mt={50}>
+                  <strong>Available commands:</strong>
+      </Text>
+      <Text>
+        <Code>move [n, s, e, w]</Code>{' '}
+        {currentRoom.items && <><Code>get [item]</Code>{' '}</>}                
+        {user.items && <><Code>drop [item]</Code>{' '}</>}
+      </Text>
+    </>
+  )
 }
 
 export default function Console() {
   const dispatch = useDispatch();
-  const { currentRoom, error } = useSelector(state => state.game)
+  const { user, currentRoom, error, loading } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
   const [prevCommand, setPrevCommand] = useState('')
 
@@ -65,6 +97,10 @@ export default function Console() {
       dispatch(
         move(command)
       );
+    } else if (command === 'attack') {
+      dispatch(
+        attack()
+      )
     }
     setPrevCommand(command)
     setCommand('')
@@ -77,20 +113,15 @@ export default function Console() {
                 {currentRoom.title}
               </Heading>
               <Text>{currentRoom.description}</Text>
-              <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
-              <Items currentRoom={currentRoom} error={error} />
-              <Text mt={50}>
-                <strong>Available commands:</strong>
-              </Text>
-              <Text>
-                <Code>move [n, s, e, w]</Code>{' '}
-                {currentRoom.items && (
-                <><Code>get [item]</Code> <Code>drop [item]</Code></>
-                )}
-              </Text>
+              {error && <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />}
+              {currentRoom.NPCs && <NPCs currentRoom={currentRoom} />}
+              {currentRoom.mobs && <Monsters currentRoom={currentRoom} />}
+              {currentRoom.items && <Items currentRoom={currentRoom} />}              
+              <Commands currentRoom={currentRoom} user={user} />
               <form onSubmit={handleSubmit}>
                 <Flex mt={30}>
                   <Input
+                    autoFocus
                     variant="filled"
                     size="sm"
                     mr={1}
@@ -103,11 +134,13 @@ export default function Console() {
                     size="sm"
                     variantColor="gray"
                     variant="outline"
+                    disabled={loading && true}
                   >
                     enter
                   </Button>
                 </Flex>
               </form>
+              {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
             </Stack>
           </Stack>
     );
