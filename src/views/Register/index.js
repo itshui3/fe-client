@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as ReactLink, useHistory } from 'react-router-dom';
+import { Link as ReactLink, useHistory, Redirect } from 'react-router-dom';
 import Layout from '../../common/Layout';
 import {
   FormControl,
@@ -39,6 +39,12 @@ export default function Register() {
       )
     );
   };
+
+  if (localStorage.getItem('token')) {
+    return (
+      <Redirect to="/game" />
+    )
+  }
   return (
     <Layout minH="100vh" maxW="100vw">
       <Flex minH="92vh" flexDirection="column" justify="center" align="center">
@@ -101,6 +107,8 @@ export default function Register() {
                 <option value="warrior">Warrior</option>
                 <option value="mage">Mage</option>
                 <option value="thief">Thief</option>
+                <option value="ninja">Ninja</option>
+                <option value="hunter">Hunter</option>
               </Select>
             </FormControl>
           </Flex>

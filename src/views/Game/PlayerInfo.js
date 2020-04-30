@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux'
 
 export default function PlayerInfo() {
     const { user } = useSelector(state => state.game)
-    console.log(user)
 
     return (
         <Flex h={175}>

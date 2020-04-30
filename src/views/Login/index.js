@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as ReactLink } from 'react-router-dom';
+import { Link as ReactLink, Redirect } from 'react-router-dom';
 import { login } from '../../redux/slices/authSlice';
 import Layout from '../../common/Layout';
 import {
@@ -25,6 +25,11 @@ export default function Login() {
     );
   };
 
+  if (localStorage.getItem('token')) {
+    return (
+      <Redirect to="/game" />
+    )
+  }
   return (
     <Layout minH="100vh" maxW="100vw">
       <Flex minH="92vh" flexDirection="column" justify="center" align="center">

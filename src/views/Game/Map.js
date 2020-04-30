@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import useImage from 'use-image';
 import { Stage, Layer, Line, Star, Rect } from 'react-konva';
 import stone from '../../img/stone.jpg'
+import { useSelector } from 'react-redux'
 
 function Wall({ x, y, tileSize, direction }) {
     return (
@@ -36,23 +37,20 @@ function PlayerIcon({ x, y }) {
     )
 }
 
-const initializeArr = []
-
-for (let i = 0; i < 25; i++) {
-    initializeArr.push('x')
-}
-
 export default function Map() {
+    const { currentRoom, map } = useSelector(state => state.game)
     const [background] = useImage(stone);
-    const [rooms, setRooms] = useState(initializeArr);
-    const mapSquareRoot = Math.sqrt(rooms.length);
-    const tileSize = 570 / mapSquareRoot;
     const [tiles, setTiles] = useState([]);
 
     useEffect(() => {
         let position = { x: 0, y: 0 }
         let counter = 0
-        setTiles(rooms.map((room, index) => {
+            
+        const mapSquareRoot = Math.sqrt(map.length);
+        const tileSize = 570 / mapSquareRoot;
+
+        setTiles(map.map((room, index) => {
+            
             if (index > 0) {
                 position.x = position.x + tileSize
             }
@@ -63,16 +61,16 @@ export default function Map() {
                 position = { x: 0, y: position.y + tileSize }
             }
             return (
-                <>
-                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east" />
-                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />
-                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />
-                    <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />
-                    {index === 12 && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
+                <>  
+                    {!room.east && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east" />}
+                    {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />}
+                    {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />}
+                    {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />}
+                    {currentRoom.title === room.title  && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
                 </>
             )
         }))
-    }, [mapSquareRoot, tileSize, rooms])
+    }, [map])
 
     return (
         <Stage width={570} height={570}>
