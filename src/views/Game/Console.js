@@ -11,7 +11,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { move } from '../../redux/slices/gameSlice';
 
-function Message({ prevCommand, currentRoom, error }) {
+function Message({ error }) {
   if (error) {
     return (
       <Text mt={3}>
@@ -19,30 +19,34 @@ function Message({ prevCommand, currentRoom, error }) {
       </Text>
     )
   }
-  else if (prevCommand === 'examine room') {
-    return (
-      <>
-        <Text mt={3}>
-          <strong>You examine the area.</strong>
-        </Text>
-        {
-          currentRoom.items.length > 0 ? (
-              <Text>
-                Items:{' '}
-                {
-                  currentRoom.items.map(item => (
-                      <>
-                          <Code>{item.title}</Code>{' '}
-                      </>
-                  ))
-                }
-              </Text>
-          ) : <Text>There is nothing of interest.</Text>
-        }
-      </>
-    )
-  } else return <></>
+  else return <></>
 };
+
+function Items({ currentRoom }) {
+  if (currentRoom.items) {
+    if (currentRoom.items.includes(' ')) {
+      return (
+        <Text mt={3}>
+          <strong>Items:</strong>{' '}
+            {
+              currentRoom.items.split(' ').map(item => (
+                  <>
+                      <Code>{item}</Code>{' '}
+                  </>
+              ))
+            }
+        </Text>
+      )
+    } else {
+      return (
+        <Text mt={3}>
+          <strong>Items:</strong>{' '}
+          <Code>{currentRoom.items}</Code>
+        </Text>
+      )
+    }
+  } else return <></>
+}
 
 export default function Console() {
   const dispatch = useDispatch();
@@ -74,12 +78,15 @@ export default function Console() {
               </Heading>
               <Text>{currentRoom.description}</Text>
               <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
+              <Items currentRoom={currentRoom} error={error} />
               <Text mt={50}>
                 <strong>Available commands:</strong>
               </Text>
               <Text>
-                <Code>move [n, s, e, w]</Code> <Code>examine [room, item]</Code>{' '}
-                <Code>get [item]</Code> <Code>drop [item]</Code>
+                <Code>move [n, s, e, w]</Code>{' '}
+                {currentRoom.items && (
+                <><Code>get [item]</Code> <Code>drop [item]</Code></>
+                )}
               </Text>
               <form onSubmit={handleSubmit}>
                 <Flex mt={30}>
