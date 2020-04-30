@@ -16,7 +16,8 @@ export const gameSlice = createSlice({
         attack: 0,
         gold: 0,
         encounter_cd: 0,
-        items: ''
+        items: '',
+        current_room: ''
     },
     currentRoom: {
         title: '',
@@ -28,7 +29,8 @@ export const gameSlice = createSlice({
         south: null,
         west: null,
         east: null
-    }
+    },
+    map: []
   },
   reducers: {
     gameInitStart: (state) => {
@@ -39,6 +41,7 @@ export const gameSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user
         state.currentRoom = action.payload.currentRoom
+        state.map = action.payload.map
     },
     gameInitFailure: (state) => {
         state.loading = false;
@@ -51,6 +54,7 @@ export const gameSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user
         state.currentRoom = action.payload.currentRoom
+        state.map = action.payload.map
     },
     moveFailure: (state) => {
         state.loading = false;
@@ -79,9 +83,13 @@ export const {
 export const gameInit = (values) => (dispatch) => {
   dispatch(gameInitStart());
   axiosWithAuth()
-    .get('/adv/init/')
+    .get('/player/startgame/')
     .then((res) => {
-        dispatch(gameInitSuccess({ user: res.data.user, currentRoom: res.data.room }))
+        dispatch(gameInitSuccess({
+            user: res.data.user,
+            currentRoom: res.data.room,
+            map: res.data.map
+        }))
     })
     .catch((err) => {
         dispatch(gameInitFailure())
@@ -99,11 +107,15 @@ export const move = (direction) => (dispatch) => {
                 dispatch(noExit("You can't move in that direction."))
             }
             else{
-                dispatch(moveSuccess({ user: res.data.user, currentRoom: {
-                    ...res.data.room,
-                    items: res.data.room.items.split(' '),
-                    NPCs: res.data.room.NPCs.split(' ')
-                } }))
+                dispatch(moveSuccess({
+                    user: res.data.user,
+                    currentRoom: {
+                        ...res.data.room,
+                        items: res.data.room.items.split(' '),
+                        NPCs: res.data.room.NPCs.split(' ')
+                    },
+                    map: res.data.map
+                }))
             }
         })
         .catch((err) => {

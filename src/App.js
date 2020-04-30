@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { PrivateRoute } from './redux/utils/PrivateRoute';
 import './App.css';
 
 import Home from './views/Home';
@@ -13,7 +14,7 @@ function App() {
       <Route exact path="/" component={Home} />
       <Route path="/register" component={Register} />
       <Route path="/login" component={Login} />
-      <Route path="/game" component={Game} />
+      <PrivateRoute path="/game" component={Game} />
     </div>
   );
 }
