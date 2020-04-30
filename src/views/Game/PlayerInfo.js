@@ -7,27 +7,44 @@ import {
   Image,
   Code,
 } from '@chakra-ui/core';
+import { useSelector } from 'react-redux'
 
 export default function PlayerInfo() {
+    const { user } = useSelector(state => state.game)
+
     return (
         <Flex h={175}>
             <Box width={150}>
-                <Image src="https://via.placeholder.com/150" />
+                <Image
+                    src={user.portrait}
+                    fallbackSrc="https://via.placeholder.com/150"
+                />
             </Box>
             <Stack pl={3}>
                 <Text>
-                <strong>Player Name</strong>, Warrior
+                    <strong>{user.character_name}</strong>,{' '}
+                    <span style={{ textTransform: "capitalize" }}>
+                        {user.character_type}
+                    </span>
                 </Text>
                 <Text>
-                <strong>HP:</strong> 100/100 <strong>MP:</strong> 20/20
+                    <strong>HP:</strong> {user.HP}{' '}
+                    <strong>MP:</strong> {user.MP}
                 </Text>
                 <Text>
-                <strong>Gold:</strong> 560
+                    <strong>Gold:</strong> {user.gold}
                 </Text>
                 <Text>
-                <strong>Inventory:</strong> <Code>item 1</Code>{' '}
-                <Code>item 2</Code> <Code>item 3</Code> <Code>item 4</Code>{' '}
-                <Code>item 5</Code>
+                    <strong>Inventory:</strong>{' '}
+                    {/* {
+                        user.items.split(' ').length > 0 ?
+                            user.items.split(' ').map(item => (
+                                <>
+                                    <Code>{item}</Code>{' '}
+                                </>
+                            ))
+                        : 'Empty!'
+                    } */}
                 </Text>
             </Stack>
         </Flex>

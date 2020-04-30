@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   Stack,
@@ -8,35 +8,95 @@ import {
   Button,
   Code,
 } from '@chakra-ui/core';
+import { useSelector, useDispatch } from 'react-redux'
+import { move } from '../../redux/slices/gameSlice';
+
+function Message({ error }) {
+  if (error) {
+    return (
+      <Text mt={3}>
+          <strong>{error}</strong>
+      </Text>
+    )
+  }
+  else return <></>
+};
+
+function Items({ currentRoom }) {
+  if (currentRoom.items) {
+    if (currentRoom.items.includes(' ')) {
+      return (
+        <Text mt={3}>
+          <strong>Items:</strong>{' '}
+            {
+              currentRoom.items.split(' ').map(item => (
+                  <>
+                      <Code>{item}</Code>{' '}
+                  </>
+              ))
+            }
+        </Text>
+      )
+    } else {
+      return (
+        <Text mt={3}>
+          <strong>Items:</strong>{' '}
+          <Code>{currentRoom.items}</Code>
+        </Text>
+      )
+    }
+  } else return <></>
+}
 
 export default function Console() {
+  const dispatch = useDispatch();
+  const { currentRoom, error } = useSelector(state => state.game)
+  const [command, setCommand] = useState('')
+  const [prevCommand, setPrevCommand] = useState('')
+
+  const handleChange = e => {
+    e.preventDefault()
+    setCommand(e.target.value)
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    if (command === 'n' || command === 's' || command === 'e' || command === 'w') {
+      dispatch(
+        move(command)
+      );
+    }
+    setPrevCommand(command)
+    setCommand('')
+  };
+
     return (
         <Stack p={5} justify="space-between">
             <Stack>
               <Heading as="h3" size="md">
-                Outside Cave Entrance
+                {currentRoom.title}
               </Heading>
-              <Text>North of you, the cave mouth beckons.</Text>
-              <Text mt={3}>
-                <strong>You examine the area.</strong>
-              </Text>
-              <Text>
-                Items: <Code>health potion</Code> <Code>torch</Code>
-              </Text>
+              <Text>{currentRoom.description}</Text>
+              <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
+              <Items currentRoom={currentRoom} error={error} />
               <Text mt={50}>
                 <strong>Available commands:</strong>
               </Text>
               <Text>
-                <Code>move [n, s, e, w]</Code> <Code>examine [room, item]</Code>{' '}
-                <Code>get [item]</Code> <Code>drop [item]</Code>
+                <Code>move [n, s, e, w]</Code>{' '}
+                {currentRoom.items && (
+                <><Code>get [item]</Code> <Code>drop [item]</Code></>
+                )}
               </Text>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <Flex mt={30}>
                   <Input
                     variant="filled"
                     size="sm"
                     mr={1}
                     placeholder="enter a command"
+                    value={command}
+                    onChange={handleChange}
                   />
                   <Button
                     type="submit"

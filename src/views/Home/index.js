@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Redirect } from 'react-router-dom';
 import Layout from '../../common/Layout';
 import { Flex, Button } from '@chakra-ui/core';
 
@@ -23,7 +23,12 @@ function ButtonLink({ path, text }) {
   );
 }
 
-export default function Home() {
+export default function Home() {  
+  if (localStorage.getItem('token')) {
+    return (
+      <Redirect to="/game" />
+    )
+  }
   return (
     <Layout minH="100vh" maxW="100vw">
       <Flex minH="92vh" flexDirection="column" justify="center" align="center">

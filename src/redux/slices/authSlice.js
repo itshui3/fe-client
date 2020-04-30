@@ -30,6 +30,7 @@ export const login = (values, history) => (dispatch) => {
   axiosWithBaseURL()
     .post('/login/', values)
     .then((res) => {
+      console.log(res)
       dispatch(success());
       localStorage.setItem('token', res && res.data && res.data.key);
       history.push('/game');
