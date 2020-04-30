@@ -11,8 +11,15 @@ import {
 import { useSelector, useDispatch } from 'react-redux'
 import { move } from '../../redux/slices/gameSlice';
 
-function Message({ prevCommand, currentRoom }) {
-  if (prevCommand === 'examine room') {
+function Message({ prevCommand, currentRoom, error }) {
+  if (error) {
+    return (
+      <Text mt={3}>
+          <strong>{error}</strong>
+      </Text>
+    )
+  }
+  else if (prevCommand === 'examine room') {
     return (
       <>
         <Text mt={3}>
@@ -39,7 +46,7 @@ function Message({ prevCommand, currentRoom }) {
 
 export default function Console() {
   const dispatch = useDispatch();
-  const { currentRoom } = useSelector(state => state.game)
+  const { currentRoom, error } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
   const [prevCommand, setPrevCommand] = useState('')
 
@@ -66,7 +73,7 @@ export default function Console() {
                 {currentRoom.title}
               </Heading>
               <Text>{currentRoom.description}</Text>
-              <Message prevCommand={prevCommand} currentRoom={currentRoom} />
+              <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
               <Text mt={50}>
                 <strong>Available commands:</strong>
               </Text>

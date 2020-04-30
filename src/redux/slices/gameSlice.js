@@ -5,25 +5,35 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState: {
     loading: false,
+    error: '',
     user: {
         username: '',
         character_name: '',
         character_type: '',
         portrait: '',
-        HP: null,
-        MP: null,
-        gold: null,
-        items: []
+        HP: 0,
+        MP: 0,
+        attack: 0,
+        gold: 0,
+        encounter_cd: 0,
+        items: ''
     },
     currentRoom: {
         title: '',
         description: '',
-        items: []
+        floor: '',
+        items: [],
+        NPCs: [],
+        north: null,
+        south: null,
+        west: null,
+        east: null
     }
   },
   reducers: {
     gameInitStart: (state) => {
         state.loading = true;
+        state.error = ''
     },
     gameInitSuccess: (state, action) => {
         state.loading = false;
@@ -35,6 +45,7 @@ export const gameSlice = createSlice({
     },
     moveStart: (state) => {
         state.loading = true;
+        state.error = ''
     },
     moveSuccess: (state, action) => {
         state.loading = false;
@@ -43,7 +54,11 @@ export const gameSlice = createSlice({
     },
     moveFailure: (state) => {
         state.loading = false;
-    }
+    },
+    noExit: (state, action) => {
+        state.loading = false;
+        state.error = action.payload
+    },
   },
 });
 
@@ -53,7 +68,8 @@ export const {
     gameInitFailure,
     moveStart,
     moveSuccess,
-    moveFailure
+    moveFailure,
+    noExit
 } = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -65,20 +81,7 @@ export const gameInit = (values) => (dispatch) => {
   axiosWithAuth()
     .get('/adv/init/')
     .then((res) => {
-        const user = {
-            username: res.data.username,
-            character_name: res.data.character_name,
-            character_type: res.data.character_type,
-            portrait: res.data.portrait,
-            HP: res.data.HP,
-            MP: res.data.MP,
-            gold: res.data.gold
-        }
-        const currentRoom = {
-            title: res.data.current_room.title,
-            description: res.data.current_room.description
-        }
-        dispatch(gameInitSuccess({ user: user, currentRoom: currentRoom }))
+        dispatch(gameInitSuccess({ user: res.data.user, currentRoom: res.data.room }))
     })
     .catch((err) => {
         dispatch(gameInitFailure())
@@ -91,12 +94,17 @@ export const move = (direction) => (dispatch) => {
     axiosWithAuth()
         .post('/player/movement/', { direction: direction })
         .then((res) => {
-            const currentRoom = {
-                title: res.data.current_room.title,
-                description: res.data.current_room.description,
-                items: res.data.current_room.items
+            console.log(res)
+            if (res.data === 'ya done goofed, no room here') {
+                dispatch(noExit("You can't move in that direction."))
             }
-            dispatch(moveSuccess({ currentRoom: currentRoom }))
+            else{
+                dispatch(moveSuccess({ user: res.data.user, currentRoom: {
+                    ...res.data.room,
+                    items: res.data.room.items.split(' '),
+                    NPCs: res.data.room.NPCs.split(' ')
+                } }))
+            }
         })
         .catch((err) => {
             dispatch(moveFailure())
