@@ -10,14 +10,18 @@ import {
   Spinner
 } from '@chakra-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
-import { move, attack } from '../../redux/slices/gameSlice';
+import { move, attack, shop, handleError } from '../../redux/slices/gameSlice';
 
-function Message({ error }) {
-  return (
-    <Text mt={3}>
-        <strong>{error}</strong>
-    </Text>
-  )
+function Message({ error, prevCommand, currentRoom }) {
+  if (error) {
+    return (
+      <Text mt={3}>
+          <strong>{error}</strong>
+      </Text>
+    )
+  } else if (currentRoom.NPCs.includes('merchant') && prevCommand === 'peruse') {
+    return <Text>Hello Merchant</Text>
+  } else return <></>
 };
 
 function NPCs({ currentRoom }) {
@@ -69,12 +73,19 @@ function Commands({ currentRoom, user }) {
   return (
     <>
       <Text mt={50}>
-                  <strong>Available commands:</strong>
+        <strong>Available commands:</strong>
       </Text>
       <Text>
         <Code>move [n, s, e, w]</Code>{' '}
         {currentRoom.items && <><Code>get [item]</Code>{' '}</>}                
-        {user.items && <><Code>drop [item]</Code>{' '}</>}
+        {user.items && <><Code>drop [item]</Code>{' '}</>}                
+        {currentRoom.NPCs.includes('merchant') && (
+          <>
+            <Code>peruse</Code>{' '}
+            <Code>buy [item]</Code>{' '}
+            <Code>sell [item]</Code>{' '}
+          </>)
+        }
       </Text>
     </>
   )
@@ -94,13 +105,20 @@ export default function Console() {
   const handleSubmit = e => {
     e.preventDefault()
     if (command === 'n' || command === 's' || command === 'e' || command === 'w') {
-      dispatch(
-        move(command)
-      );
+      dispatch(move(command));
     } else if (command === 'attack') {
-      dispatch(
-        attack()
-      )
+      dispatch(attack())
+    } else if (currentRoom.NPCs.includes('merchant') && command === 'peruse' || command.includes('buy') || command.includes('sell')) {
+      if (command === "peruse") {
+       dispatch(shop(command))
+      } else {
+        const cmd_parse = command.split(' ')
+        console.log(cmd_parse)
+        dispatch(shop(cmd_parse[0], cmd_parse[1]))
+      }
+    }
+    else {
+      handleError('Please enter a valid command.')
     }
     setPrevCommand(command)
     setCommand('')
@@ -113,10 +131,10 @@ export default function Console() {
                 {currentRoom.title}
               </Heading>
               <Text>{currentRoom.description}</Text>
-              {error && <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />}
+              <Message prevCommand={prevCommand} currentRoom={currentRoom} error={error} />
               {currentRoom.NPCs && <NPCs currentRoom={currentRoom} />}
               {currentRoom.mobs && <Monsters currentRoom={currentRoom} />}
-              {currentRoom.items && <Items currentRoom={currentRoom} />}              
+              {currentRoom.items && <Items currentRoom={currentRoom} />}
               <Commands currentRoom={currentRoom} user={user} />
               <form onSubmit={handleSubmit}>
                 <Flex mt={30}>

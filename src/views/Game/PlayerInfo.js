@@ -5,7 +5,6 @@ import {
   Stack,
   Text,
   Image,
-  Code,
 } from '@chakra-ui/core';
 import { useSelector } from 'react-redux'
 
