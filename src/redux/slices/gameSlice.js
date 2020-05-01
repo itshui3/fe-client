@@ -31,7 +31,7 @@ export const gameSlice = createSlice({
         west: null,
         east: null
     },
-    combatLog:[],
+    combatLog:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
     merchantInventory: [],
     map: []
   },
@@ -58,6 +58,7 @@ export const gameSlice = createSlice({
         state.user = action.payload.user
         state.currentRoom = action.payload.currentRoom
         state.map = action.payload.map
+        state.combatLog = []
     },
     moveFailure: (state) => {
         state.loading = false;

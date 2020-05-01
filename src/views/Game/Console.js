@@ -180,7 +180,7 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              <Flex mt={30} align="center" direction="column">
+              <Flex mt={30} align="center" direction="column" height="360px" overflowY="auto">
                 {combatLog && 
                     combatLog.map((message, index) => (
                       <div key={index}>{message}<br/></div>
