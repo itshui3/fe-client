@@ -10,7 +10,7 @@ import {
   Spinner
 } from '@chakra-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
-import { move, attack, shop, handleError } from '../../redux/slices/gameSlice';
+import { move, attack, shop, handleError, getItem, dropItem } from '../../redux/slices/gameSlice';
 
 function Message({ error }) {
   if (error) {
@@ -112,6 +112,13 @@ export default function Console() {
       } else {
         const cmd_parse = command.split(' ')
         dispatch(shop(cmd_parse[0], cmd_parse[1]))
+      }
+    } else if (command.includes('get') || command.includes('drop')) {
+      const cmd_parse = command.split(' ')
+      if (cmd_parse[0] === 'get') {
+        dispatch(getItem(cmd_parse[1]))
+      } else {
+        dispatch(dropItem(cmd_parse[1]))
       }
     }
     else {

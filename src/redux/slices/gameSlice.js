@@ -96,7 +96,41 @@ export const gameSlice = createSlice({
     },
     updateMerchantItems: (state, action) => {
         state.merchantInventory = action.payload
-    }
+    },
+    getItemStart: (state) => {
+        state.loading = true;
+        state.error = '';
+    },
+    getItemSuccess: (state, action) => {
+        state.loading = false;
+        state.user = {
+            ...state.user,
+            items: action.payload.items
+        };
+        state.currentRoom = {
+            ...state.currentRoom,
+            items: action.payload.roomItems
+        };
+    },
+    getItemFailure: (state) => {
+        state.loading = false;},
+    dropItemStart: (state) => {
+        state.loading = true;
+        state.error = '';},
+    dropItemSuccess: (state, action) => {
+        state.loading = false;
+        state.user = {
+            ...state.user,
+            items: action.payload.items
+        };
+        state.currentRoom = {
+            ...state.currentRoom,
+            items: action.payload.roomItems
+        };
+    },
+    dropItemFailure: (state) => {
+        state.loading = false;
+    },
   },
 });
 
@@ -115,7 +149,13 @@ export const {
     shopSuccess,
     shopFailure,
     updateUserItems,
-    updateMerchantItems
+    updateMerchantItems,
+    getItemStart,
+    getItemSuccess,
+    getItemFailure,
+    dropItemStart,
+    dropItemSuccess,
+    dropItemFailure,
 } = gameSlice.actions;
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -223,6 +263,44 @@ export const shop = (command, item) => (dispatch) => {
         .catch((err) => {
             dispatch(shopFailure())
             console.log(err)
+        })
+};
+
+export const getItem = (item) => (dispatch) => {
+    dispatch(getItemStart());
+
+    axiosWithAuth()
+        .post('/items/', { command: 'get', item: item })
+        .then((res) => {
+            if (res.data.error) {
+                dispatch(setError(res.data.error))
+            } else {
+                dispatch(getItemSuccess({ items: res.data.items, roomItems: res.data.room_inventory }));
+                console.log(res);
+            }
+        })
+        .catch((err) => {
+            dispatch(getItemFailure());
+            console.log(err);
+        })
+};
+
+export const dropItem = (item) => (dispatch) => {
+    dispatch(dropItemStart());
+
+    axiosWithAuth()
+        .post('/items/', { command: 'drop', item: item })
+        .then((res) => {
+            if (res.data.error) {
+                dispatch(setError(res.data.error));
+            } else {
+                dispatch(dropItemSuccess({ items: res.data.items, roomItems: res.data.room_inventory }));
+                console.log(res);
+            }
+        })
+        .catch((err) => {
+            dispatch(dropItemFailure());
+            console.log(err);
         })
 };
 
