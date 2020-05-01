@@ -46,7 +46,6 @@ export const getMessages = () => (dispatch) => {
     .get('/messages/')
     .then((res) => {
       dispatch(getSuccess(res.data));
-      // console.log(res);
     })
     .catch((err) => {
       dispatch(failure());
@@ -55,19 +54,16 @@ export const getMessages = () => (dispatch) => {
 };
 
 export const pushMessage = (message) => (dispatch) => {
-  console.log('message', message);
   dispatch(pushMessageAction(message));
 };
 
 export const postMessage = (values) => (dispatch) => {
-  console.log('values:', values);
   dispatch(start());
   axiosWithAuth()
     .post('/messages/', values)
     .then((res) => {
       dispatch(success());
       // dispatch(addMessageAction(res.data));
-      console.log('post res:', res.data);
     })
     .catch((err) => {
       dispatch(failure());

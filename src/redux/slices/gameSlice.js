@@ -178,7 +178,6 @@ export const gameInit = () => (dispatch) => {
   axiosWithAuth()
     .get('/player/startgame/')
     .then((res) => {
-      console.log(res);
       const map = res.data.map.sort((a, b) => (a.id > b.id ? 1 : -1));
       dispatch(
         gameInitSuccess({
@@ -199,7 +198,6 @@ export const move = (direction) => (dispatch) => {
   axiosWithAuth()
     .post('/player/movement/', { direction: direction })
     .then((res) => {
-      console.log(res);
       if (res.data.error) {
         dispatch(setError(res.data.error));
       } else {
@@ -230,7 +228,6 @@ export const attack = () => (dispatch) => {
           user: res.data.user,
         })
       );
-      console.log('attack success', res.data);
     })
     .catch((err) => {
       dispatch(attackFailure());
@@ -263,12 +260,10 @@ export const shop = (command, item) => (dispatch) => {
       } else {
         dispatch(shopSuccess());
         if (command.includes('buy') || command.includes('sell')) {
-          console.log(res.data);
           const gold = res.data.gold;
           const items = res.data.items;
           dispatch(updateUserItems({ gold: gold, items: items }));
         } else {
-          console.log(res.data);
           dispatch(updateMerchantItems(res.data));
         }
       }
@@ -294,7 +289,6 @@ export const getItem = (item) => (dispatch) => {
             roomItems: res.data.room_inventory,
           })
         );
-        console.log(res);
       }
     })
     .catch((err) => {
@@ -318,7 +312,6 @@ export const dropItem = (item) => (dispatch) => {
             roomItems: res.data.room_inventory,
           })
         );
-        console.log(res);
       }
     })
     .catch((err) => {
