@@ -16,11 +16,11 @@ export default function MessageList() {
       console.log(message);
       dispatch(pushMessage(message));
     });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     dispatch(getMessages());
-  }, [dispatch, getMessages]);
+  }, [dispatch]);
 
   return (
     <Flex
