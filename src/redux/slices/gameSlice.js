@@ -73,7 +73,9 @@ export const gameSlice = createSlice({
     },
     attackSuccess: (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
+      if (action.payload.user){
+        state.user = action.payload.user;
+      }
       // state.currentRoom = action.payload.currentRoom
       state.combatLog = action.payload.combat.message;
       // console.log(action.payload.combat.message[0])
