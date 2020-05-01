@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
 import { move, attack, shop, handleError, getItem, dropItem } from '../../redux/slices/gameSlice';
+import CombatLog from './CombatLog'
 
 function Message({ error }) {
   if (error) {
@@ -88,13 +89,6 @@ function Commands({ currentRoom, user }) {
     </>
   )
 }
-
-// async function CombatLog(combatLog) {
-//   for (let i = 0; i < combatLog.length; i++){
-//     return <div key={i}>Test</div>
-    
-//   }
-// }
 
 export default function Console() {
   const dispatch = useDispatch();
@@ -188,11 +182,9 @@ export default function Console() {
                 </Flex>
               </form>
               {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} /> : 
-                            <Flex mt={30} align="center" direction="column" height="360px" width="200px" backgroundColor="blue" overflowY="auto">
-                            {combatLog && 
-                                  combatLog.map((message, index) =>(
-                                    <div key={index}>{message}</div>
-                                  ))
+                            <Flex mt={30} align="center" direction="column" height="360px" width="200px" paddingTop="40px" marginLeft="10px" backgroundColor="blue" overflowY="auto">
+                            {combatLog.length > 0 && 
+                                <CombatLog combatLog={combatLog} />
                                 }
                           </Flex>
               }
