@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useImage from 'use-image';
-import { Stage, Layer, Line, Star, Rect } from 'react-konva';
+import { Stage, Layer, Line, Star, Rect, Image, URLImage } from 'react-konva';
 import stone from '../../img/stone.jpg'
 import { useSelector } from 'react-redux'
 
@@ -37,6 +37,11 @@ function PlayerIcon({ x, y }) {
     )
 }
 
+const PlayerImage = ({x, y}) => {
+    const [image] = useImage('/character.png');
+    return <Image x={x} y={y} image={image} width={50} height={50} />;
+  };
+
 export default function Map() {
     const { currentRoom, map } = useSelector(state => state.game)
     const [background] = useImage(stone);
@@ -66,7 +71,7 @@ export default function Map() {
                     {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north"/>}
                     {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south"/>}
                     {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west"/>}
-                    {currentRoom.title === room.title  && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
+                    {currentRoom.title === room.title  && <PlayerImage x={position.x + 30} y={position.y + 35} />}
                     {/* {console.log(index)} */}
                 </>
             )
