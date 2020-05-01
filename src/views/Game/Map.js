@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useImage from 'use-image';
-import { Stage, Layer, Line, Star, Rect, Image, URLImage } from 'react-konva';
+import { Stage, Layer, Line, Rect, Image } from 'react-konva';
 import stone from '../../img/stone.jpg'
 import { useSelector } from 'react-redux'
 
@@ -25,18 +25,18 @@ function Wall({ x, y, tileSize, direction }) {
     )
 }
 
-function PlayerIcon({ x, y }) {
-    return (
-        <Star
-            x={x}
-            y={y}
-            numPoints={5}
-            outerRadius={20}
-            innerRadius={10}
-            fill="#000"
-        />
-    )
-}
+// function PlayerIcon({ x, y }) {
+//     return (
+//         <Star
+//             x={x}
+//             y={y}
+//             numPoints={5}
+//             outerRadius={20}
+//             innerRadius={10}
+//             fill="#000"
+//         />
+//     )
+// }
 
 const PlayerImage = ({x, y}) => {
     const [image] = useImage('/character.png');
@@ -78,7 +78,7 @@ export default function Map() {
         }))
     }, [map, currentRoom])
 
-    console.log(tiles)
+    // console.log(tiles)
 
     return (
         <Stage width={570} height={570}>

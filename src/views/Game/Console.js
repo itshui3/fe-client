@@ -89,12 +89,12 @@ function Commands({ currentRoom, user }) {
   )
 }
 
-async function CombatLog(combatLog) {
-  for (let i = 0; i < combatLog.length; i++){
-    return <div key={i}>Test</div>
+// async function CombatLog(combatLog) {
+//   for (let i = 0; i < combatLog.length; i++){
+//     return <div key={i}>Test</div>
     
-  }
-}
+//   }
+// }
 
 export default function Console() {
   const dispatch = useDispatch();
