@@ -20,6 +20,7 @@ function Wall({ x, y, tileSize, direction }) {
             }
             stroke="#000"
             strokeWidth={8}
+            key={Date.now()}
         />
     )
 }
@@ -62,11 +63,12 @@ export default function Map() {
             }
             return (
                 <>  
-                    {!room.east && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east" />}
-                    {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />}
-                    {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />}
-                    {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />}
+                    {!room.east && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east"/>}
+                    {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north"/>}
+                    {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south"/>}
+                    {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west"/>}
                     {currentRoom.title === room.title  && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
+                    {/* {console.log(index)} */}
                 </>
             )
         }))

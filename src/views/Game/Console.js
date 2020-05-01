@@ -177,8 +177,10 @@ export default function Console() {
                   >
                     enter
                   </Button>
+                  
                 </Flex>
               </form>
+              <Flex mt={30}><div>Attack responses here!</div></Flex>
               {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
             </Stack>
           </Stack>
