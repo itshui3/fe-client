@@ -13,7 +13,7 @@ import {
   Stack,
   Image,
   RadioGroup,
-  Radio
+  Radio,
 } from '@chakra-ui/core';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
@@ -21,7 +21,7 @@ import { register as registerAction } from '../../redux/slices/authSlice';
 
 export default function Register() {
   const { handleSubmit, register } = useForm();
-  const [portrait, setPortrait] = useState('https://i.imgur.com/33YFmmJ.png')
+  const [portrait, setPortrait] = useState('https://i.imgur.com/33YFmmJ.png');
   const dispatch = useDispatch();
   const history = useHistory();
   const onSubmit = (data) => {
@@ -33,7 +33,7 @@ export default function Register() {
           password2: data.confirm_password,
           character_name: data.character_name,
           character_type: data.character_type,
-          portrait: portrait
+          portrait: portrait,
         },
         history
       )
@@ -41,17 +41,12 @@ export default function Register() {
   };
 
   if (localStorage.getItem('token')) {
-    return (
-      <Redirect to="/game" />
-    )
+    return <Redirect to="/game" />;
   }
   return (
     <Layout minH="100vh" maxW="100vw">
       <Flex minH="92vh" flexDirection="column" justify="center" align="center">
-        <form
-          style={{ width: '75vh' }}
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form style={{ width: '75vh' }} onSubmit={handleSubmit(onSubmit)}>
           <FormControl isRequired>
             <FormLabel htmlFor="username" mt={5} color="gray.50">
               Username
@@ -102,8 +97,15 @@ export default function Register() {
               />
             </FormControl>
             <FormControl w="48%" isRequired>
-              <FormLabel htmlFor="character_type" mt={5} color="gray.50">Class</FormLabel>
-              <Select name="character_type" id="character_type" variant="flushed" ref={register}>
+              <FormLabel htmlFor="character_type" mt={5} color="gray.50">
+                Class
+              </FormLabel>
+              <Select
+                name="character_type"
+                id="character_type"
+                variant="flushed"
+                ref={register}
+              >
                 <option value="warrior">Warrior</option>
                 <option value="mage">Mage</option>
                 <option value="thief">Thief</option>
@@ -113,37 +115,52 @@ export default function Register() {
             </FormControl>
           </Flex>
           <FormControl as="fieldset" mt={5}>
-            <FormLabel htmlFor="portrait" color="gray.50" as="legend">Appearance</FormLabel>
+            <FormLabel htmlFor="portrait" color="gray.50" as="legend">
+              Appearance
+            </FormLabel>
             <RadioGroup
-              style={{ display: "flex", justifyContent: "space-between" }}
+              style={{ display: 'flex', justifyContent: 'space-between' }}
               name="portrait"
               id="portrait"
-              onChange={e => setPortrait(e.target.value)} value={portrait}
+              onChange={(e) => setPortrait(e.target.value)}
+              value={portrait}
             >
-                <Radio type="radio" name="portrait" value="https://i.imgur.com/33YFmmJ.png">
-                  <Image
-                    src="https://i.imgur.com/33YFmmJ.png"
-                    fallbackSrc="https://via.placeholder.com/150"
-                    size={150}
-                    alt="Portrait of an elf"
-                  />
-                </Radio>
-                <Radio type="radio" name="portrait" value="https://i.imgur.com/eHbbvJu.png">
-                  <Image
-                    src="https://i.imgur.com/eHbbvJu.png"
-                    fallbackSrc="https://via.placeholder.com/150"
-                    size={150}
-                    alt="Portrait of a cat person"
-                  />
-                </Radio>
-                <Radio type="radio" name="portrait" value="https://i.imgur.com/ELrdSHC.png">
-                  <Image
-                    src="https://i.imgur.com/ELrdSHC.png"
-                    fallbackSrc="https://via.placeholder.com/150"
-                    size={150}
-                    alt="Portrait of a tiefling"
-                  />
-                </Radio>
+              <Radio
+                type="radio"
+                name="portrait"
+                value="https://i.imgur.com/33YFmmJ.png"
+              >
+                <Image
+                  src="https://i.imgur.com/33YFmmJ.png"
+                  fallbackSrc="https://via.placeholder.com/150"
+                  size={150}
+                  alt="Portrait of an elf"
+                />
+              </Radio>
+              <Radio
+                type="radio"
+                name="portrait"
+                value="https://i.imgur.com/eHbbvJu.png"
+              >
+                <Image
+                  src="https://i.imgur.com/eHbbvJu.png"
+                  fallbackSrc="https://via.placeholder.com/150"
+                  size={150}
+                  alt="Portrait of a cat person"
+                />
+              </Radio>
+              <Radio
+                type="radio"
+                name="portrait"
+                value="https://i.imgur.com/ELrdSHC.png"
+              >
+                <Image
+                  src="https://i.imgur.com/ELrdSHC.png"
+                  fallbackSrc="https://via.placeholder.com/150"
+                  size={150}
+                  alt="Portrait of a tiefling"
+                />
+              </Radio>
             </RadioGroup>
           </FormControl>
           <Stack w="100%" align="center">
