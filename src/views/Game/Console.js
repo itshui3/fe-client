@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/core';
 import { useSelector, useDispatch } from 'react-redux'
 import { move, attack, shop, handleError, getItem, dropItem } from '../../redux/slices/gameSlice';
+import CombatLog from './CombatLog'
 
 function Message({ error }) {
   if (error) {
@@ -27,10 +28,10 @@ function NPCs({ currentRoom }) {
     <Text mt={3}>
       <strong>NPCs:</strong>{' '}
         {
-          currentRoom.NPCs.split(' ').map(npc => (
-              <>
+          currentRoom.NPCs.split(' ').map((npc, index) => (
+              <span key={index}>
                   <Code>{npc}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -42,10 +43,10 @@ function Monsters({ currentRoom }) {
     <Text mt={3}>
       <strong>Monsters:</strong>{' '}
         {
-          currentRoom.mobs.split(' ').map(mob => (
-              <>
+          currentRoom.mobs.split(' ').map((mob, index) => (
+              <span key={index}>
                   <Code>{mob}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -57,10 +58,10 @@ function Items({ currentRoom }) {
     <Text mt={3}>
       <strong>Items:</strong>{' '}
         {
-          currentRoom.items.split(' ').map(item => (
-              <>
+          currentRoom.items.split(' ').map((item, index) => (
+              <span key={index}>
                   <Code>{item}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -91,7 +92,7 @@ function Commands({ currentRoom, user }) {
 
 export default function Console() {
   const dispatch = useDispatch();
-  const { user, currentRoom, error, loading, merchantInventory } = useSelector(state => state.game)
+  const { user, currentRoom, error, loading, merchantInventory, combatLog } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
   const [prevCommand, setPrevCommand] = useState('')
 
@@ -129,7 +130,7 @@ export default function Console() {
   };
 
     return (
-        <Stack p={5} justify="space-between">
+        <Stack p={5} justify="space-between" width="385px">
             <Stack>
               <Heading as="h3" size="md">
                 {currentRoom.title}
@@ -177,9 +178,15 @@ export default function Console() {
                   >
                     enter
                   </Button>
+                  
                 </Flex>
               </form>
-              {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
+              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} />
+              : <>
+                <Stack paddingTop="40px" marginLeft="10px">
+                    {combatLog.length > 0 && <CombatLog combatLog={combatLog} />}
+                </Stack>
+              </>}
             </Stack>
           </Stack>
     );

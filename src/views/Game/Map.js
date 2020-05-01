@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import useImage from 'use-image';
-import { Stage, Layer, Line, Star, Rect } from 'react-konva';
+import { Stage, Layer, Line, Rect, Image } from 'react-konva';
 import stone from '../../img/stone.jpg'
 import { useSelector } from 'react-redux'
 
 function Wall({ x, y, tileSize, direction }) {
+    // console.log(Math.floor(Math.random() * Math.floor(1000)))
     return (
         <Line
             points={
@@ -24,18 +25,23 @@ function Wall({ x, y, tileSize, direction }) {
     )
 }
 
-function PlayerIcon({ x, y }) {
-    return (
-        <Star
-            x={x}
-            y={y}
-            numPoints={5}
-            outerRadius={20}
-            innerRadius={10}
-            fill="#000"
-        />
-    )
-}
+// function PlayerIcon({ x, y }) {
+//     return (
+//         <Star
+//             x={x}
+//             y={y}
+//             numPoints={5}
+//             outerRadius={20}
+//             innerRadius={10}
+//             fill="#000"
+//         />
+//     )
+// }
+
+const PlayerImage = ({x, y}) => {
+    const [image] = useImage('/character.png');
+    return <Image x={x} y={y} image={image} width={50} height={50} />;
+  };
 
 export default function Map() {
     const { currentRoom, map } = useSelector(state => state.game)
@@ -66,11 +72,13 @@ export default function Map() {
                     {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />}
                     {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />}
                     {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />}
-                    {currentRoom.title === room.title  && <PlayerIcon x={position.x + (tileSize / 2)} y={position.y + (tileSize / 2)} />}
+                    {currentRoom.title === room.title  && <PlayerImage x={position.x + 30} y={position.y + 35} />}
                 </>
             )
         }))
     }, [map, currentRoom])
+
+    // console.log(tiles)
 
     return (
         <Stage width={570} height={570}>

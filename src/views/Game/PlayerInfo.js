@@ -38,10 +38,10 @@ export default function PlayerInfo() {
                     <strong>Inventory:</strong>{' '}
                     {
                         user.items ?
-                            user.items.split(' ').map(item => (
-                                <>
+                            user.items.split(' ').map((item, index) => (
+                                <span key={index}>
                                     <Code>{item}</Code>{' '}
-                                </>
+                                </span>
                             ))
                         : 'Empty!'
                     }
