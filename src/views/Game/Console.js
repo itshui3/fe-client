@@ -12,7 +12,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import {
   move,
-  attack,
+  combat,
   shop,
   handleError,
   getItem,
@@ -43,7 +43,7 @@ function NPCs({ currentRoom }) {
   );
 }
 
-function Monsters() {
+function Monsters({ currentNPC }) {
   return (
     <Text mt={3}>
       <strong>A monster blocks your path - attack or run!</strong>
@@ -64,7 +64,7 @@ function Items({ currentRoom }) {
   );
 }
 
-function Commands({ currentRoom, user }) {
+function Commands({ currentRoom, currentNPC, user }) {
   return (
     <>
       <Text mt={50}>
@@ -82,7 +82,7 @@ function Commands({ currentRoom, user }) {
             <Code>drop [item]</Code>{' '}
           </>
         )}
-        {currentRoom.mobs && (
+        {currentNPC && (
           <>
             <Code>attack</Code> <Code>run</Code>{' '}
           </>
@@ -102,6 +102,7 @@ export default function Console() {
   const {
     user,
     currentRoom,
+    currentNPC,
     error,
     loading,
     merchantInventory,
@@ -118,15 +119,18 @@ export default function Console() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (
+      // movement
       command === 'n' ||
       command === 's' ||
       command === 'e' ||
       command === 'w'
     ) {
       dispatch(move(command));
-    } else if (command === 'attack') {
-      dispatch(attack());
+    } else if (command === 'attack' || command === 'run') {
+      // combat
+      dispatch(combat(command));
     } else if (
+      // merchant commands
       currentRoom.NPCs?.includes('merchant') &&
       (command === 'peruse' ||
         command.includes('buy') ||
@@ -139,6 +143,7 @@ export default function Console() {
         dispatch(shop(cmd_parse[0], cmd_parse[1]));
       }
     } else if (command.includes('get') || command.includes('drop')) {
+      // get or drop an item
       const cmd_parse = command.split(' ');
       if (cmd_parse[0] === 'get') {
         dispatch(getItem(cmd_parse[1]));
@@ -181,9 +186,13 @@ export default function Console() {
           </>
         )}
         {currentRoom.NPCs && <NPCs currentRoom={currentRoom} />}
-        {currentRoom.mobs && <Monsters />}
+        {currentNPC && <Monsters currentNPC={currentNPC} />}
         {currentRoom.items && <Items currentRoom={currentRoom} />}
-        <Commands currentRoom={currentRoom} user={user} />
+        <Commands
+          currentRoom={currentRoom}
+          currentNPC={currentNPC}
+          user={user}
+        />
         <form onSubmit={handleSubmit}>
           <Flex mt={30}>
             <Input

@@ -16,20 +16,30 @@ export const gameSlice = createSlice({
       attack: 0,
       gold: 0,
       encounter_cd: 0,
-      items: '',
+      items: null,
       current_room: '',
     },
     currentRoom: {
       title: '',
       description: '',
       floor: '',
-      items: '',
-      NPCs: '',
-      mobs: '',
+      items: null,
+      NPCs: null,
+      mobs: null,
       north: null,
       south: null,
       west: null,
       east: null,
+    },
+    currentNPC: {
+      id: null,
+      name: '',
+      description: '',
+      items: null,
+      gold: 0,
+      HP: 0,
+      isHostile: false,
+      attack: 0,
     },
     combatLog: [],
     merchantInventory: [],
@@ -57,6 +67,7 @@ export const gameSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.currentRoom = action.payload.currentRoom;
+      state.currentNPC = action.payload.npc;
       state.map = action.payload.map;
       state.combatLog = [];
     },
@@ -67,18 +78,18 @@ export const gameSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    attackStart: (state) => {
+    combatStart: (state) => {
       state.loading = true;
       state.error = '';
     },
-    attackSuccess: (state, action) => {
+    combatSuccess: (state, action) => {
       state.loading = false;
       state.user = action.payload.user;
-      // state.currentRoom = action.payload.currentRoom
+      state.currentRoom = action.payload.room;
       state.combatLog = action.payload.combat.message;
       // console.log(action.payload.combat.message[0])
     },
-    attackFailure: (state) => {
+    combatFailure: (state) => {
       state.loading = false;
     },
     shopStart: (state) => {
@@ -148,9 +159,9 @@ export const {
   moveSuccess,
   moveFailure,
   setError,
-  attackStart,
-  attackSuccess,
-  attackFailure,
+  combatStart,
+  combatSuccess,
+  combatFailure,
   shopStart,
   shopSuccess,
   shopFailure,
@@ -173,6 +184,7 @@ export const handleError = (error) => (dispatch) => {
   dispatch(setError(error));
 };
 
+// get game data upon navigating to the page or refreshing
 export const gameInit = () => (dispatch) => {
   dispatch(gameInitStart());
   axiosWithAuth()
@@ -193,11 +205,14 @@ export const gameInit = () => (dispatch) => {
     });
 };
 
+// move in a given direction
+// will return an error if there is a wall in the way or a monster is blocking your path
 export const move = (direction) => (dispatch) => {
   dispatch(moveStart());
   axiosWithAuth()
     .post('/player/movement/', { direction: direction })
     .then((res) => {
+      console.log(res.data);
       if (res.data.error) {
         dispatch(setError(res.data.error));
       } else {
@@ -206,6 +221,7 @@ export const move = (direction) => (dispatch) => {
           moveSuccess({
             user: res.data.user,
             currentRoom: res.data.room,
+            npc: res.data.npc,
             map: map,
           })
         );
@@ -217,24 +233,34 @@ export const move = (direction) => (dispatch) => {
     });
 };
 
-export const attack = () => (dispatch) => {
-  dispatch(attackStart());
+// attack or run from a a monster
+// will return an error if there is no monster present
+export const combat = (command) => (dispatch) => {
+  dispatch(combatStart());
   axiosWithAuth()
-    .post('/player/combat/', { command: 'attack' })
+    .post('/player/combat/', { command: command })
     .then((res) => {
-      dispatch(
-        attackSuccess({
-          combat: res.data.combat,
-          user: res.data.user,
-        })
-      );
+      console.log(res.data);
+      if (res.data.error) {
+        dispatch(setError(res.data.error));
+      } else {
+        dispatch(
+          combatSuccess({
+            combat: res.data.combat,
+            room: res.data.room,
+            user: res.data.user,
+          })
+        );
+      }
     })
     .catch((err) => {
-      dispatch(attackFailure());
+      dispatch(combatFailure());
       console.log(err);
     });
 };
 
+// view a merchant's inventory and buy/sell items
+// will return error if item is out of stock
 export const shop = (command, item) => (dispatch) => {
   let payload = { command: command };
 
@@ -274,6 +300,8 @@ export const shop = (command, item) => (dispatch) => {
     });
 };
 
+// get an item
+// will return an error if item isn't in room
 export const getItem = (item) => (dispatch) => {
   dispatch(getItemStart());
 
@@ -297,6 +325,8 @@ export const getItem = (item) => (dispatch) => {
     });
 };
 
+// drop an item
+// will return an error if item isn't present in inventory
 export const dropItem = (item) => (dispatch) => {
   dispatch(dropItemStart());
 
