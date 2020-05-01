@@ -30,9 +30,14 @@ export const login = (values, history) => (dispatch) => {
   axiosWithBaseURL()
     .post('/login/', values)
     .then((res) => {
-      dispatch(success());
-      localStorage.setItem('token', res && res.data && res.data.key);
-      history.push('/game');
+      if (res.data.error) {
+        dispatch(failure());
+        alert(res.data.error);
+      } else {
+        dispatch(success());
+        localStorage.setItem('token', res && res.data && res.data.key);
+        history.push('/game');
+      }
     })
     .catch((err) => {
       dispatch(failure());
@@ -45,9 +50,14 @@ export const register = (values, history) => (dispatch) => {
   axiosWithBaseURL()
     .post('/registration/', values)
     .then((res) => {
-      dispatch(success());
-      localStorage.setItem('token', res && res.data && res.data.key);
-      history.push('/game');
+      if (res.data.error) {
+        dispatch(failure());
+        alert(res.data.error);
+      } else {
+        dispatch(success());
+        localStorage.setItem('token', res && res.data && res.data.key);
+        history.push('/game');
+      }
     })
     .catch((err) => {
       dispatch(failure());
