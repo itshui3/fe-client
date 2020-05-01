@@ -198,12 +198,8 @@ export const move = (direction) => (dispatch) => {
   axiosWithAuth()
     .post('/player/movement/', { direction: direction })
     .then((res) => {
-      if (res.data === 'ya done goofed, no room here') {
-        dispatch(setError("You can't move in that direction."));
-      } else if (
-        res.data === 'monster present, deal with it before leaving the room'
-      ) {
-        dispatch(setError('A monster blocks your path - deal with it first!'));
+      if (res.data.error) {
+        dispatch(setError(res.data.error));
       } else {
         const map = res.data.map.sort((a, b) => (a.id > b.id ? 1 : -1));
         dispatch(
