@@ -20,7 +20,6 @@ function Wall({ x, y, tileSize, direction }) {
             }
             stroke="#000"
             strokeWidth={8}
-            key={Date.now()}
         />
     )
 }

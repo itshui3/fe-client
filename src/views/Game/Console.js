@@ -180,10 +180,12 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              <Flex mt={30} align="center" direction="column">{
-                combatLog.map((message, index) => (
-                  <div key={index}>{message}<br/></div>
-                ))}
+              <Flex mt={30} align="center" direction="column">
+                {combatLog && 
+                    combatLog.map((message, index) => (
+                      <div key={index}>{message}<br/></div>
+                    ))
+                }
               </Flex>
               {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
             </Stack>
