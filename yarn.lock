@@ -9089,6 +9089,13 @@ react-spring@^8.0.27:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
 
+react-text-transition@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-text-transition/-/react-text-transition-1.0.2.tgz#f0576a0744e2b3fe26ff6b74991b3646655b16f4"
+  integrity sha512-PBMnk5eS/jgkc4ueBhNRmALel7Cdxl/Ng6fID+20cycBKwW/sRP3FXAQHD241ZUYxg/x8EVJ/PR/fkj5oxrxbg==
+  dependencies:
+    react-spring "^8.0.27"
+
 react@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"
