@@ -130,7 +130,7 @@ export default function Console() {
   };
 
     return (
-        <Stack p={5} justify="space-between">
+        <Stack p={5} justify="space-between" width="385px">
             <Stack>
               <Heading as="h3" size="md">
                 {currentRoom.title}
@@ -181,13 +181,10 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} /> : 
-                            <Flex mt={30} align="center" direction="column" height="360px" width="200px" paddingTop="40px" marginLeft="10px" backgroundColor="blue" overflowY="auto">
-                            {combatLog.length > 0 && 
-                                <CombatLog combatLog={combatLog} />
-                                }
-                          </Flex>
-              }
+              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} /> : <></>}
+              <Stack paddingTop="40px" marginLeft="10px">
+                  <CombatLog combatLog={combatLog} />
+              </Stack>
             </Stack>
           </Stack>
     );

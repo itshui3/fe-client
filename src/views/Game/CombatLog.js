@@ -31,12 +31,12 @@ const CombatLog = ({ combatLog }) => {
   }, 2000);
 
   return (
-    <h1>
+    <>
       <TextTransition
         text={combatLog[index % combatLog.length]}
         springConfig={presets.wobbly}
       />
-    </h1>
+    </>
   );
 };
 
