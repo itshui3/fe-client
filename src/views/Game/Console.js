@@ -181,10 +181,12 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} /> : <></>}
-              <Stack paddingTop="40px" marginLeft="10px">
-                  <CombatLog combatLog={combatLog} />
-              </Stack>
+              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} />
+              : <>
+                <Stack paddingTop="40px" marginLeft="10px">
+                    {combatLog.length > 0 && <CombatLog combatLog={combatLog} />}
+                </Stack>
+              </>}
             </Stack>
           </Stack>
     );
