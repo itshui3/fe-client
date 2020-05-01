@@ -5,6 +5,7 @@ import stone from '../../img/stone.jpg'
 import { useSelector } from 'react-redux'
 
 function Wall({ x, y, tileSize, direction }) {
+    // console.log(Math.floor(Math.random() * Math.floor(1000)))
     return (
         <Line
             points={
@@ -67,16 +68,17 @@ export default function Map() {
             }
             return (
                 <>  
-                    {!room.east && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east"/>}
-                    {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north"/>}
-                    {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south"/>}
-                    {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west"/>}
+                    {!room.east && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="east" />}
+                    {!room.north && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="north" />}
+                    {!room.south && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="south" />}
+                    {!room.west && <Wall x={position.x} y={position.y} tileSize={tileSize} direction="west" />}
                     {currentRoom.title === room.title  && <PlayerImage x={position.x + 30} y={position.y + 35} />}
-                    {/* {console.log(index)} */}
                 </>
             )
         }))
     }, [map, currentRoom])
+
+    console.log(tiles)
 
     return (
         <Stage width={570} height={570}>

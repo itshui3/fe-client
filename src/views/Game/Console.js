@@ -27,10 +27,10 @@ function NPCs({ currentRoom }) {
     <Text mt={3}>
       <strong>NPCs:</strong>{' '}
         {
-          currentRoom.NPCs.split(' ').map(npc => (
-              <>
+          currentRoom.NPCs.split(' ').map((npc, index) => (
+              <span key={index}>
                   <Code>{npc}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -42,10 +42,10 @@ function Monsters({ currentRoom }) {
     <Text mt={3}>
       <strong>Monsters:</strong>{' '}
         {
-          currentRoom.mobs.split(' ').map(mob => (
-              <>
+          currentRoom.mobs.split(' ').map((mob, index) => (
+              <span key={index}>
                   <Code>{mob}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -57,10 +57,10 @@ function Items({ currentRoom }) {
     <Text mt={3}>
       <strong>Items:</strong>{' '}
         {
-          currentRoom.items.split(' ').map(item => (
-              <>
+          currentRoom.items.split(' ').map((item, index) => (
+              <span key={index}>
                   <Code>{item}</Code>{' '}
-              </>
+              </span>
           ))
         }
     </Text>
@@ -87,6 +87,13 @@ function Commands({ currentRoom, user }) {
       </Text>
     </>
   )
+}
+
+async function CombatLog(combatLog) {
+  for (let i = 0; i < combatLog.length; i++){
+    return <div key={i}>Test</div>
+    
+  }
 }
 
 export default function Console() {
@@ -180,14 +187,15 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              <Flex mt={30} align="center" direction="column" height="360px" overflowY="auto">
-                {combatLog && 
-                    combatLog.map((message, index) => (
-                      <div key={index}>{message}<br/></div>
-                    ))
-                }
-              </Flex>
-              {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
+              {loading ? <Spinner style={{ alignSelf: "center" }} mt={3} /> : 
+                            <Flex mt={30} align="center" direction="column" height="360px" width="200px" backgroundColor="blue" overflowY="auto">
+                            {combatLog && 
+                                  combatLog.map((message, index) =>(
+                                    <div key={index}>{message}</div>
+                                  ))
+                                }
+                          </Flex>
+              }
             </Stack>
           </Stack>
     );

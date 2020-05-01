@@ -31,7 +31,7 @@ export const gameSlice = createSlice({
         west: null,
         east: null
     },
-    combatLog:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+    combatLog:[],
     merchantInventory: [],
     map: []
   },
@@ -75,8 +75,8 @@ export const gameSlice = createSlice({
         state.loading = false;
         // state.user = action.payload.user
         // state.currentRoom = action.payload.currentRoom
-        state.combatLog = [...state.combatLog, action.payload.combatLog]
-        // console.log(action.payload)
+        state.combatLog = action.payload.combat.message
+        console.log(action.payload.combat.message[0])
     },
     attackFailure: (state) => {
         state.loading = false;
@@ -221,7 +221,7 @@ export const attack = () => (dispatch) => {
         .post('/player/combat/', { command: 'attack' })
         .then((res) => {
             dispatch(attackSuccess({
-                combatLog: res.data
+                combat: res.data.combat
             }));
             console.log('attack success', res);
         })
