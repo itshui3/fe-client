@@ -25,21 +25,29 @@ export default function MessageList() {
   return (
     <Flex
       direction="column"
-      align="center"
+      // align="center"
       m="0 0.5rem 0 0.3rem"
       maxH="80vh"
-      overflow="auto"
+      overflowY="scroll"
+      overflowX="hidden"
+      w="100%"
+      maxW="100%"
     >
       {messages?.map((message) => (
-        <Flex key={v4()} w="100%">
-          <Box m="0.3rem 0">
-            <Text m="0 0.5rem 0 0">{message.username}</Text>
+        <Flex key={v4()} w="100%" maxW="100%" direction="column">
+          <Box m="0 0 0 0.3rem">
+            <Text>{message.username}</Text>
           </Box>
-          <Box bg="gray.200" m="0.3rem 0" radius="1rem">
-            <Text color="gray.900" id="message-end">
+          <Flex
+            bg="gray.200"
+            m="0 0.5rem 0.5rem 0.5rem"
+            radius="1rem"
+            maxW="100%"
+          >
+            <Text color="gray.900" id="message-end" maxW="100%" p="0.3rem">
               {message.message}
             </Text>
-          </Box>
+          </Flex>
         </Flex>
       ))}
     </Flex>
