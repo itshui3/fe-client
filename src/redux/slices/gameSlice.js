@@ -31,6 +31,7 @@ export const gameSlice = createSlice({
         west: null,
         east: null
     },
+    combatLog:[],
     merchantInventory: [],
     map: []
   },
@@ -71,8 +72,10 @@ export const gameSlice = createSlice({
     },
     attackSuccess: (state, action) => {
         state.loading = false;
-        state.user = action.payload.user
-        state.currentRoom = action.payload.currentRoom
+        // state.user = action.payload.user
+        // state.currentRoom = action.payload.currentRoom
+        state.combatLog = [...state.combatLog, action.payload.combatLog]
+        // console.log(action.payload)
     },
     attackFailure: (state) => {
         state.loading = false;
@@ -216,8 +219,10 @@ export const attack = () => (dispatch) => {
     axiosWithAuth()
         .post('/player/combat/', { command: 'attack' })
         .then((res) => {
-            dispatch(shopSuccess());
-            console.log(res);
+            dispatch(attackSuccess({
+                combatLog: res.data
+            }));
+            console.log('attack success', res);
         })
         .catch((err) => {
             dispatch(attackFailure())

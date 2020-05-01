@@ -91,7 +91,7 @@ function Commands({ currentRoom, user }) {
 
 export default function Console() {
   const dispatch = useDispatch();
-  const { user, currentRoom, error, loading, merchantInventory } = useSelector(state => state.game)
+  const { user, currentRoom, error, loading, merchantInventory, combatLog } = useSelector(state => state.game)
   const [command, setCommand] = useState('')
   const [prevCommand, setPrevCommand] = useState('')
 
@@ -180,7 +180,11 @@ export default function Console() {
                   
                 </Flex>
               </form>
-              <Flex mt={30}><div>Attack responses here!</div></Flex>
+              <Flex mt={30} align="center" direction="column">{
+                combatLog.map((message, index) => (
+                  <div key={index}>{message}<br/></div>
+                ))}
+              </Flex>
               {loading && <Spinner style={{ alignSelf: "center" }} mt={3} />}
             </Stack>
           </Stack>
