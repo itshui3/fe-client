@@ -55,6 +55,7 @@ export const gameSlice = createSlice({
       state.user = action.payload.user;
       state.currentRoom = action.payload.currentRoom;
       state.map = action.payload.map;
+      state.currentNPC = action.payload.npc
     },
     gameInitFailure: (state) => {
       state.loading = false;
