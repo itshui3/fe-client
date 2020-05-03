@@ -44,6 +44,7 @@ function NPCs({ currentRoom }) {
 }
 
 function Monsters({ currentNPC }) {
+  console.log(currentNPC, 'currentNPC')
   return (
     <Text mt={3}>
       <strong>A monster blocks your path - attack or run!</strong>
